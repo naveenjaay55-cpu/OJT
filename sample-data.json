@@ -1,0 +1,64 @@
+{
+  "products": [
+    {
+      "productId": "P001",
+      "name": "Notebook",
+      "category": "Stationery",
+      "price": 60,
+      "stock": 50,
+      "lowStockThreshold": 10,
+      "createdAt": "2026-10-30T09:00:00.000Z",
+      "updatedAt": "2026-10-30T09:00:00.000Z"
+    },
+    {
+      "productId": "P002",
+      "name": "Blue Pen",
+      "category": "Stationery",
+      "price": 10,
+      "stock": 100,
+      "lowStockThreshold": 20,
+      "createdAt": "2026-10-30T09:15:00.000Z",
+      "updatedAt": "2026-10-30T09:15:00.000Z"
+    },
+    {
+      "productId": "P003",
+      "name": "Water Bottle",
+      "category": "Accessories",
+      "price": 150,
+      "stock": 8,
+      "lowStockThreshold": 10,
+      "createdAt": "2026-10-30T09:30:00.000Z",
+      "updatedAt": "2026-10-30T09:30:00.000Z"
+    },
+    {
+      "productId": "P004",
+      "name": "Chips Packet",
+      "category": "Snacks",
+      "price": 20,
+      "stock": 30,
+      "lowStockThreshold": 5,
+      "createdAt": "2026-10-30T09:45:00.000Z",
+      "updatedAt": "2026-10-30T09:45:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "transactionId": "T001",
+      "productId": "P001",
+      "productName": "Notebook",
+      "quantity": 2,
+      "unitPrice": 60,
+      "totalAmount": 120,
+      "cashierId": "C001",
+      "createdAt": "2026-10-30T10:30:00",
+      "status": "SUCCESS"
+    }
+  ],
+  "settings": {
+    "storeName": "Campus Store",
+    "currencySymbol": "₹",
+    "currencyCode": "INR",
+    "defaultLowStockThreshold": 10
+  }
+}
+

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Store Inventory & Sequential Checkout System</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Project Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary-subtle">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="navbar-brand d-flex align-items-center fw-bold" href="#">
+        <i class="bi bi-shop-window me-2 text-warning fs-4"></i>
+        <span>Campus Store</span>
+        <span class="navbar-brand-badge">Sequential POS</span>
+      </a>
+
+      <!-- Right Controls: Active Role Indicator + Role Switcher Simulation -->
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <div id="navbar-role-badge" class="role-pill cashier">
+          <i class="bi bi-person-badge"></i> Cashier (C001)
+        </div>
+
+        <div class="input-group input-group-sm" style="max-width: 250px;">
+          <label class="input-group-text bg-secondary text-white border-0" for="role-selector">
+            <i class="bi bi-arrow-repeat me-1"></i> Role:
+          </label>
+          <select id="role-selector" class="form-select form-select-sm bg-light text-dark fw-bold border-0">
+            <option value="cashier">Cashier (C001)</option>
+            <option value="store_operations">Store Operations Staff (S001)</option>
+          </select>
+        </div>
+
+        <!-- Reset Sample Data Button -->
+        <button class="btn btn-sm btn-outline-warning text-nowrap" data-bs-toggle="modal" data-bs-target="#resetModal" title="Reset to official sample data">
+          <i class="bi bi-arrow-counterclockwise"></i> Reset Sample Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Role Notice Banner -->
+  <div class="container-fluid px-3 px-lg-4 pt-3">
+    <div id="role-notice-container"></div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="container-fluid px-3 px-lg-4 py-3">
+
+    <!-- KPI Summary Cards Row (FR-13, FR-11) -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="kpi-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="kpi-title">Active Products</div>
+            <i class="bi bi-boxes fs-4 text-primary opacity-75"></i>
+          </div>
+          <div class="kpi-value" id="kpi-total-products">0</div>
+          <div class="text-muted small mt-1">Unique catalog SKUs</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="kpi-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="kpi-title">Low Stock Alert</div>
+            <i class="bi bi-exclamation-triangle fs-4 text-danger opacity-75"></i>
+          </div>
+          <div class="kpi-value" id="kpi-low-stock">0</div>
+          <div class="text-muted small mt-1">&le; configured thresholds</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="kpi-card kpi-sales">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="kpi-title">Total Sales Revenue</div>
+            <i class="bi bi-currency-rupee fs-4 text-success opacity-75"></i>
+          </div>
+          <div class="kpi-value" id="kpi-total-sales">₹0.00</div>
+          <div class="text-muted small mt-1">Cumulative sales</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="kpi-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="kpi-title">Transactions</div>
+            <i class="bi bi-receipt-cutoff fs-4 text-primary opacity-75"></i>
+          </div>
+          <div class="kpi-value" id="kpi-transactions">0</div>
+          <div class="text-muted small mt-1">Completed checkouts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <ul class="nav nav-pills mb-3" id="mainTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pos-tab" data-bs-toggle="pill" data-bs-target="#tab-pos" type="button" role="tab">
+          <i class="bi bi-cart3 me-1"></i> Checkout / POS
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="inventory-tab" data-bs-toggle="pill" data-bs-target="#tab-inventory" type="button" role="tab">
+          <i class="bi bi-box-seam me-1"></i> Product Inventory
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="history-tab" data-bs-toggle="pill" data-bs-target="#tab-history" type="button" role="tab">
+          <i class="bi bi-clock-history me-1"></i> Checkout History
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="summary-tab" data-bs-toggle="pill" data-bs-target="#tab-summary" type="button" role="tab">
+          <i class="bi bi-graph-up-arrow me-1"></i> Sales Summary
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="mainTabContent">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: POS / CHECKOUT (Cashier View)        -->
+      <!-- ========================================== -->
+      <div class="tab-pane fade show active" id="tab-pos" role="tabpanel">
+        <div class="row g-4">
+          
+          <!-- Left Column: Product Selection Grid & Filters -->
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-3">
+              <div class="card-body p-3">
+                <div class="row g-2 align-items-center">
+                  <div class="col-md-7">
+                    <div class="input-group">
+                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                      <input type="text" id="pos-search-input" class="form-control border-start-0" placeholder="Search product name or SKU (e.g. Notebook, P001)...">
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <select id="pos-category-filter" class="form-select">
+                      <option value="ALL">All Categories</option>
+                      <option value="Stationery">Stationery</option>
+                      <option value="Accessories">Accessories</option>
+                      <option value="Snacks">Snacks</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Selection Grid (FR-01, FR-04, FR-11) -->
+            <div class="row g-3" id="pos-product-grid">
+              <!-- Dynamically populated product cards -->
+            </div>
+          </div>
+
+          <!-- Right Column: Sequential Checkout Form Panel (FR-04 to FR-10) -->
+          <div class="col-lg-4">
+            <div class="checkout-panel">
+              <div class="checkout-panel-header d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-cash-coin me-2 text-primary"></i>Checkout Form</h5>
+                  <small class="text-muted">Sequential Purchase Terminal</small>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">C001</span>
+              </div>
+
+              <div class="card-body p-3 p-xl-4">
+
+                <!-- Step 1: Product Selection Dropdown (FR-04) -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold small text-uppercase text-muted">1. Select Product for Purchase</label>
+                  <select id="pos-product-select-dropdown" class="form-select fw-semibold">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+
+                <!-- Product Showcase Box -->
+                <div id="checkout-selected-box" class="selected-product-box mb-3">
+                  <!-- Dynamic product details rendered here -->
+                </div>
+
+                <!-- Product Price & Available Stock Preview (FR-04) -->
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <div class="p-2 border rounded bg-white text-center">
+                      <small class="text-muted d-block text-uppercase" style="font-size: 0.72rem;">Unit Price</small>
+                      <span class="fw-bold fs-5 text-primary" id="checkout-unit-price">₹0.00</span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-2 border rounded bg-white text-center">
+                      <small class="text-muted d-block text-uppercase" style="font-size: 0.72rem;">Available Stock</small>
+                      <span class="fw-bold fs-5" id="checkout-available-stock">0</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2: Quantity Input (FR-05) -->
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label fw-bold small text-uppercase text-muted mb-0">2. Purchase Quantity</label>
+                    <span id="checkout-stock-badge" class="badge bg-secondary">Stock Check</span>
+                  </div>
+                  <div class="input-group">
+                    <button class="btn btn-outline-secondary" type="button" id="btn-qty-minus"><i class="bi bi-dash"></i></button>
+                    <input type="number" id="checkout-quantity-input" class="form-control text-center fw-bold fs-5" value="1" min="1" step="1">
+                    <button class="btn btn-outline-secondary" type="button" id="btn-qty-plus"><i class="bi bi-plus"></i></button>
+                  </div>
+                  <small class="text-muted">Must be a positive whole integer.</small>
+                </div>
+
+                <!-- Step 3: Total Amount Before Checkout (FR-07) -->
+                <div class="price-calculation-box mb-3">
+                  <div class="d-flex justify-content-between text-muted small mb-1">
+                    <span>Calculation:</span>
+                    <span id="checkout-calc-qty">1 unit</span>
+                  </div>
+                  <div class="calculation-total-row">
+                    <span>Total Amount:</span>
+                    <span id="checkout-total-amount">₹0.00</span>
+                  </div>
+                </div>
+
+                <!-- Step 4: Checkout Actions (FR-08, FR-09, FR-10) -->
+                <div class="d-grid gap-2">
+                  <button type="button" id="btn-process-checkout" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                    <i class="bi bi-check2-circle me-1"></i> Complete Checkout
+                  </button>
+                  <button type="button" id="btn-test-oversell" class="btn btn-outline-warning btn-sm" title="Simulates a quantity exceeding available stock to demonstrate FR-10 rejection">
+                    <i class="bi bi-bug me-1"></i> Demo: Test Oversell Scenario
+                  </button>
+                </div>
+
+                <!-- Alert Messages Container -->
+                <div id="checkout-alert-box" class="alert alert-danger mt-3 mb-0 d-none" role="alert">
+                  <!-- Live validation error or rejection message -->
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: PRODUCT INVENTORY (Store Staff)     -->
+      <!-- ========================================== -->
+      <div class="tab-pane fade" id="tab-inventory" role="tabpanel">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white py-3 border-bottom">
+            <div class="row g-2 align-items-center justify-content-between">
+              
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                  <input type="text" id="inv-search-input" class="form-control border-start-0" placeholder="Filter by product name or ID...">
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <select id="inv-category-filter" class="form-select">
+                  <option value="ALL">All Categories</option>
+                  <option value="Stationery">Stationery</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Snacks">Snacks</option>
+                </select>
+              </div>
+
+              <div class="col-md-2 text-md-center">
+                <div class="form-check form-switch d-inline-block">
+                  <input class="form-check-input" type="checkbox" role="switch" id="inv-filter-low-stock">
+                  <label class="form-check-label small fw-semibold" for="inv-filter-low-stock">Low Stock Only</label>
+                </div>
+              </div>
+
+              <div class="col-md-3 text-end">
+                <button type="button" id="btn-add-product" class="btn btn-primary fw-semibold">
+                  <i class="bi bi-plus-lg me-1"></i> Add New Product
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 table-custom">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">Product ID</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Selling Price</th>
+                  <th>Available Stock</th>
+                  <th>Threshold</th>
+                  <th>Status</th>
+                  <th class="text-end" style="width: 160px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body">
+                <!-- Dynamically populated inventory rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: CHECKOUT HISTORY (FR-14)             -->
+      <!-- ========================================== -->
+      <div class="tab-pane fade" id="tab-history" role="tabpanel">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white py-3 border-bottom">
+            <div class="row align-items-center justify-content-between">
+              <div class="col-md-5">
+                <h5 class="fw-bold mb-0"><i class="bi bi-journal-text me-2 text-primary"></i>Sequential Checkout Log</h5>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                  <input type="text" id="history-search-input" class="form-control border-start-0" placeholder="Search by Transaction ID, Product, or Cashier...">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 table-custom">
+              <thead>
+                <tr>
+                  <th>Transaction ID</th>
+                  <th>Date & Time</th>
+                  <th>Purchased Product</th>
+                  <th class="text-center">Quantity</th>
+                  <th>Unit Price</th>
+                  <th>Total Amount</th>
+                  <th>Cashier ID</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <!-- Dynamically populated transaction history rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: SALES SUMMARY & ANALYTICS (FR-13)   -->
+      <!-- ========================================== -->
+      <div class="tab-pane fade" id="tab-summary" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="fw-bold mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Sales Overview</h5>
+              </div>
+              <div class="card-body p-4">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <span class="fw-semibold">Total Revenue Generated</span>
+                    <span class="fs-5 fw-bold text-success" id="summary-total-revenue">₹0.00</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <span class="fw-semibold">Completed Checkout Transactions</span>
+                    <span class="fs-5 fw-bold text-primary" id="summary-total-orders">0</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <span class="fw-semibold">Total Product Units Sold</span>
+                    <span class="fs-5 fw-bold text-dark" id="summary-units-sold">0</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <span class="fw-semibold">Average Order Value</span>
+                    <span class="fs-5 fw-bold text-info" id="summary-avg-order">₹0.00</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <span class="fw-semibold">Today's Sales Performance</span>
+                    <span class="fs-6 fw-bold text-secondary" id="summary-today-revenue">₹0.00</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="fw-bold mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>Category Inventory & Revenue Breakdown</h5>
+              </div>
+              <div class="card-body p-4" id="summary-category-breakdown">
+                <!-- Dynamically populated category breakdown bars -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADD / EDIT PRODUCT (FR-02, FR-03)   -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="productModalLabel">Add New Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="product-form">
+          <div class="modal-body p-4">
+            <div id="modal-form-alert" class="alert alert-danger d-none" role="alert"></div>
+
+            <div class="mb-3">
+              <label for="modal-product-id" class="form-label fw-semibold">Product ID <span class="text-danger">*</span></label>
+              <input type="text" class="form-control text-uppercase" id="modal-product-id" placeholder="e.g. P005" required>
+              <small class="text-muted">Unique identifier for product inventory tracking.</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-product-name" class="form-label fw-semibold">Product Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="modal-product-name" placeholder="e.g. Scientific Calculator" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-product-category" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+              <select class="form-select" id="modal-product-category" required>
+                <option value="Stationery">Stationery</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Electronics">Electronics</option>
+              </select>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="modal-product-price" class="form-label fw-semibold">Price (₹) <span class="text-danger">*</span></label>
+                <input type="number" step="0.01" min="0" class="form-control" id="modal-product-price" placeholder="60.00" required>
+              </div>
+              <div class="col-6">
+                <label for="modal-product-stock" class="form-label fw-semibold">Stock Quantity <span class="text-danger">*</span></label>
+                <input type="number" min="0" step="1" class="form-control" id="modal-product-stock" placeholder="50" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-product-threshold" class="form-label fw-semibold">Low-Stock Alert Threshold <span class="text-danger">*</span></label>
+              <input type="number" min="0" step="1" class="form-control" id="modal-product-threshold" value="10" required>
+              <small class="text-muted">Highlight product when available stock &le; this number.</small>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary fw-semibold"><i class="bi bi-save me-1"></i> Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CHECKOUT RECEIPT (FR-08)            -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Checkout Successful</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="receipt-details">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CONFIRM RESET TO SAMPLE DATA        -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="resetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Reset Store Data?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="mb-2">This will reset all inventory items and checkout transaction records back to the <strong>official sample data (P001 to P004)</strong> defined in <code>sample-data.json</code>.</p>
+          <div class="alert alert-warning mb-0 small">
+            <i class="bi bi-info-circle me-1"></i> Local storage keys <code>campus_store_products</code> and <code>campus_store_transactions</code> will be restored to their baseline state.
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger fw-semibold" id="btn-confirm-reset">Yes, Reset to Sample Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto">
+    <div class="container-fluid px-3 px-lg-4 text-center">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-md-start small">
+          <strong>Campus Store Inventory & Sequential Checkout</strong> &bull; College OJT Project
+        </div>
+        <div class="col-md-6 text-md-end small">
+          Tech Stack: HTML5 &bull; CSS3 &bull; Bootstrap 5 &bull; Vanilla JS &bull; Python 3 Replay
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Service Layer (Section 9 Contract & Role Rules) -->
+  <script src="js/services.js"></script>
+
+  <!-- Application UI Controller -->
+  <script src="js/app.js"></script>
+</body>
+</html>
+
