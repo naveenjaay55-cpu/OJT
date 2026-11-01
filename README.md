@@ -63,7 +63,6 @@ A lightweight, robust web application built for campus retail store inventory ma
 OJT project/
 ├── index.html            # Main web application entry point
 ├── .html                 # Synchronized application file
-├── goodthread.html       # Standalone Goodthread clothing storefront demo
 ├── sample-data.json      # Official baseline sample data
 ├── replay_checkout.py    # Python 3 sequential replay & assertion script
 ├── css/
@@ -88,9 +87,6 @@ cd "OJT project"
 python3 -m http.server 8080
 ```
 Then visit: `http://localhost:8080`
-
-### Goodthread Clothing Storefront
-The repository also includes a standalone clothing-store demo with product filtering, search, size selection, and a browser-persisted shopping bag. Open [`goodthread.html`](./goodthread.html) locally or visit the [Goodthread storefront on GitHub Pages](https://naveenjaay55-cpu.github.io/OJT/goodthread.html). Checkout is a demo and does not process payments.
 
 ---
 
