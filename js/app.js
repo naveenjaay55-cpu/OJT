@@ -1065,6 +1065,10 @@
       welcomeScreen.classList.add('fade-in');
     }
 
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
     showToast('Welcome Portal', 'Returned to the Welcome Screen.', 'info');
   }
