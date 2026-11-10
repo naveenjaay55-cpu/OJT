@@ -619,3 +619,4 @@ def build_pdf(filename="Campus_Store_System_Full_Explanation.pdf"):
 
 if __name__ == "__main__":
     build_pdf()
+
