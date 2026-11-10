@@ -105,7 +105,12 @@
     <!-- Main Navigation Tabs -->
     <ul class="nav nav-pills mb-3" id="mainTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pos-tab" data-bs-toggle="pill" data-bs-target="#tab-pos" type="button" role="tab">
+        <button class="nav-link active" id="welcome-tab" data-bs-toggle="pill" data-bs-target="#tab-welcome" type="button" role="tab">
+          <i class="bi bi-house-door-fill me-1"></i> Welcome
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pos-tab" data-bs-toggle="pill" data-bs-target="#tab-pos" type="button" role="tab">
           <i class="bi bi-cart3 me-1"></i> Checkout / POS
         </button>
       </li>
@@ -130,9 +135,233 @@
     <div class="tab-content" id="mainTabContent">
 
       <!-- ========================================== -->
+      <!-- TAB 0: WELCOME & SYSTEM PORTAL (Unique Landing) -->
+      <!-- ========================================== -->
+      <div class="tab-pane fade show active" id="tab-welcome" role="tabpanel">
+        
+        <!-- Hero Section -->
+        <div class="welcome-hero mb-4">
+          <div class="row align-items-center">
+            <div class="col-lg-8">
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <span class="welcome-badge-tag">
+                  <span class="pulse-dot-green"></span>
+                  System Online &bull; Invariant Guard Active
+                </span>
+                <span class="welcome-badge-tag">
+                  <i class="bi bi-mortarboard-fill text-warning"></i> College OJT Engineering Project
+                </span>
+                <span class="welcome-badge-tag">
+                  <i class="bi bi-hdd-network text-info"></i> Sequential Engine v2.0
+                </span>
+              </div>
+              <h1 class="display-6 fw-bold mb-2">Campus Store Operations &amp; Sequential Checkout</h1>
+              <p class="lead mb-3 text-light opacity-90 fs-6">
+                A dual-role retail inventory and sequential POS terminal built with client-side atomic transactions, role-enforced security logic, and real-time stock integrity verification.
+              </p>
+              <div class="d-flex flex-wrap gap-2 pt-1">
+                <button class="btn btn-primary fw-bold px-3 py-2 shadow-sm" onclick="window.CampusStoreApp.enterAsCashier()">
+                  <i class="bi bi-person-badge me-1"></i> Launch Cashier Station (C001)
+                </button>
+                <button class="btn btn-outline-light fw-bold px-3 py-2" onclick="window.CampusStoreApp.enterAsStoreStaff()">
+                  <i class="bi bi-box-seam me-1"></i> Open Store Operations Desk (S001)
+                </button>
+                <button class="btn btn-warning fw-bold px-3 py-2 text-dark" onclick="window.CampusStoreApp.openPythonGuideModal()">
+                  <i class="bi bi-terminal me-1"></i> Python Replay Audit
+                </button>
+              </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block text-end">
+              <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-25 text-start">
+                <div class="text-uppercase small fw-bold text-warning mb-2">
+                  <i class="bi bi-shield-check me-1"></i> Engineering Guarantees
+                </div>
+                <div class="d-flex align-items-center gap-2 small text-light mb-2">
+                  <i class="bi bi-check-circle-fill text-success"></i> Strict Zero-Oversell (FR-10)
+                </div>
+                <div class="d-flex align-items-center gap-2 small text-light mb-2">
+                  <i class="bi bi-check-circle-fill text-success"></i> Invariant: stock &ge; 0 enforced
+                </div>
+                <div class="d-flex align-items-center gap-2 small text-light mb-2">
+                  <i class="bi bi-check-circle-fill text-success"></i> JS-Enforced Role Separation
+                </div>
+                <div class="d-flex align-items-center gap-2 small text-light">
+                  <i class="bi bi-check-circle-fill text-success"></i> LocalStorage Zero-Backend Persistence
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Stations Section -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+              <h5 class="fw-bold mb-1 text-dark"><i class="bi bi-door-open-fill text-primary me-2"></i>Choose Your Station</h5>
+              <p class="text-muted small mb-0">Select an operational terminal to explore role-specific capabilities and restrictions</p>
+            </div>
+            <span class="badge bg-light text-dark border">Dual-Role Architecture</span>
+          </div>
+
+          <div class="row g-3">
+            <!-- Station 1: Cashier -->
+            <div class="col-md-6">
+              <div class="station-card cashier-station">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="station-icon-box">
+                      <i class="bi bi-cart-check-fill"></i>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold">Terminal ID: C001</span>
+                  </div>
+                  <h4 class="fw-bold text-dark mb-1">Cashier Station</h4>
+                  <p class="text-muted small mb-2">Dedicated front-counter point-of-sale terminal for rapid, sequential customer checkouts.</p>
+                  
+                  <ul class="station-feature-list">
+                    <li><i class="bi bi-check-circle-fill"></i> View product catalog with live stock &amp; pricing</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Live Total Calculation (Price &times; Quantity)</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Atomic Stock Decrement on checkout completion</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Instant printable payment receipt generation</li>
+                    <li class="text-danger"><i class="bi bi-x-circle-fill"></i> <strong>Restricted:</strong> Cannot alter prices or add new products</li>
+                  </ul>
+                </div>
+                <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="window.CampusStoreApp.enterAsCashier()">
+                  Enter Cashier Station <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Station 2: Store Operations Staff -->
+            <div class="col-md-6">
+              <div class="station-card staff-station">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="station-icon-box">
+                      <i class="bi bi-boxes"></i>
+                    </div>
+                    <span class="badge bg-purple-subtle text-purple border border-purple-subtle fw-bold" style="background-color: #f3e8ff; color: #7c3aed; border-color: #e9d5ff;">Staff ID: S001</span>
+                  </div>
+                  <h4 class="fw-bold text-dark mb-1">Store Operations Desk</h4>
+                  <p class="text-muted small mb-2">Back-office master inventory control for cataloging, pricing, and threshold management.</p>
+                  
+                  <ul class="station-feature-list">
+                    <li><i class="bi bi-check-circle-fill"></i> Add new products with unique SKU validation</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Restock quantities and update unit pricing</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Configure low-stock alert thresholds (&le; N)</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Delete discontinued merchandise from catalog</li>
+                    <li class="text-danger"><i class="bi bi-x-circle-fill"></i> <strong>Restricted:</strong> Cannot perform customer checkouts</li>
+                  </ul>
+                </div>
+                <button class="btn btn-outline-dark w-100 fw-bold py-2 shadow-sm" style="border-color: #7c3aed; color: #7c3aed;" onmouseover="this.style.backgroundColor='#7c3aed';this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent';this.style.color='#7c3aed';" onclick="window.CampusStoreApp.enterAsStoreStaff()">
+                  Enter Store Operations Desk <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluator Quick-Test Sandbox Launchpad -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-lightning-charge-fill text-warning me-2"></i>Evaluator Quick-Test Launchpad
+              </h6>
+              <small class="text-muted">1-Click demonstration scenarios designed for college project evaluation</small>
+            </div>
+            <span class="badge bg-warning-subtle text-dark border border-warning-subtle">Grading Shortcuts</span>
+          </div>
+          <div class="card-body p-3 p-md-4">
+            <div class="row g-2">
+              <div class="col-sm-6 col-lg-3">
+                <button class="btn btn-outline-success w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestNormal()">
+                  <i class="bi bi-cart-check fs-4 text-success d-block mb-1"></i>
+                  <div>
+                    <strong class="d-block text-dark">1. Normal Purchase</strong>
+                    <small class="text-muted">Notebook &times; 2 (₹120) &bull; Validates stock decrement</small>
+                  </div>
+                </button>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <button class="btn btn-outline-danger w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestOversell()">
+                  <i class="bi bi-shield-x fs-4 text-danger d-block mb-1"></i>
+                  <div>
+                    <strong class="d-block text-dark">2. Oversell Protection</strong>
+                    <small class="text-muted">Requests 15 of Water Bottle (Stock 8) &bull; Tests FR-10</small>
+                  </div>
+                </button>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <button class="btn btn-outline-warning w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestLowStock()">
+                  <i class="bi bi-exclamation-triangle fs-4 text-warning d-block mb-1"></i>
+                  <div>
+                    <strong class="d-block text-dark">3. Low-Stock Radar</strong>
+                    <small class="text-muted">Filters items where stock &le; threshold &bull; Tests FR-11</small>
+                  </div>
+                </button>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <button class="btn btn-outline-primary w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.openPythonGuideModal()">
+                  <i class="bi bi-terminal-fill fs-4 text-primary d-block mb-1"></i>
+                  <div>
+                    <strong class="d-block text-dark">4. Python Replay Script</strong>
+                    <small class="text-muted">Backend audit with assert product['stock'] &ge; 0</small>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Core Pillars of the Architecture -->
+        <div class="mb-3">
+          <h6 class="fw-bold text-dark mb-3"><i class="bi bi-layers-fill text-primary me-2"></i>System Architecture Pillars</h6>
+          <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+              <div class="pillar-card">
+                <div class="pillar-icon-box bg-primary-subtle text-primary">
+                  <i class="bi bi-arrow-repeat"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Sequential Pipeline</h6>
+                <p class="text-muted small mb-0">Executes strict 11-step validation ensuring stock verification occurs prior to transaction record generation.</p>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="pillar-card">
+                <div class="pillar-icon-box bg-danger-subtle text-danger">
+                  <i class="bi bi-lock-fill"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Zero-Oversell Lock</h6>
+                <p class="text-muted small mb-0">Rejects any transaction exceeding inventory with zero modification to product stock quantities.</p>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="pillar-card">
+                <div class="pillar-icon-box bg-warning-subtle text-warning">
+                  <i class="bi bi-bell-fill"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Low-Stock Radar</h6>
+                <p class="text-muted small mb-0">Real-time alert highlighting triggered automatically whenever inventory drops below configured thresholds.</p>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="pillar-card">
+                <div class="pillar-icon-box bg-success-subtle text-success">
+                  <i class="bi bi-database-check"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Offline Persistence</h6>
+                <p class="text-muted small mb-0">Browser-native LocalStorage architecture maintaining catalog integrity across browser reloads.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================== -->
       <!-- TAB 1: POS / CHECKOUT (Cashier View)        -->
       <!-- ========================================== -->
-      <div class="tab-pane fade show active" id="tab-pos" role="tabpanel">
+      <div class="tab-pane fade" id="tab-pos" role="tabpanel">
         <div class="row g-4">
           
           <!-- Left Column: Product Selection Grid & Filters -->
@@ -493,6 +722,43 @@
   </div>
 
   <!-- ========================================== -->
+  <!-- MODAL: PYTHON REPLAY SCRIPT GUIDE          -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="pythonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold"><i class="bi bi-terminal me-2 text-warning"></i>Python Checkout Replay Script Guide</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="mb-2">The application includes a backend Python 3 replay script (<code>replay_checkout.py</code>) implementing the Stretch Goal requirements:</p>
+          <ul class="small text-muted mb-3">
+            <li>Sequentially loads transactions and tests inventory stock availability before processing.</li>
+            <li>Enforces non-negative stock invariant using Python assertions: <code>assert product["stock"] &gt;= 0</code>.</li>
+            <li>Rejects transactions exceeding inventory without modifying stock, then outputs a full audit summary table.</li>
+          </ul>
+
+          <h6 class="fw-bold mb-2">How to Execute in Terminal:</h6>
+          <div class="p-3 bg-dark text-light rounded-3 font-monospace small mb-3">
+            <span class="text-muted"># Navigate to project directory</span><br>
+            cd "OJT project"<br><br>
+            <span class="text-muted"># Run the sequential replay engine</span><br>
+            python3 replay_checkout.py
+          </div>
+
+          <div class="alert alert-info mb-0 small">
+            <i class="bi bi-info-circle-fill me-1"></i> The script reads from <code>sample-data.json</code>, executes 5 sequential transactions (including intentional oversell attempts), and verifies that all assertions pass cleanly.
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
   <!-- MODAL: CONFIRM RESET TO SAMPLE DATA        -->
   <!-- ========================================== -->
   <div class="modal fade" id="resetModal" tabindex="-1" aria-hidden="true">
@@ -543,3 +809,4 @@
   <script src="js/app.js"></script>
 </body>
 </html>
+

@@ -1016,6 +1016,18 @@
       .replace(/'/g, '&#039;');
   }
 
+  /**
+   * Navigate to a tab programmatically
+   */
+  function navigateToTab(tabButtonId) {
+    const tabEl = document.getElementById(tabButtonId);
+    if (tabEl) {
+      const tabTrigger = new bootstrap.Tab(tabEl);
+      tabTrigger.show();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
   // Export methods for inline HTML onclick handlers
   window.CampusStoreApp = {
     switchRole: function (role) {
@@ -1026,7 +1038,63 @@
     },
     selectProduct,
     openEditProductModal,
-    handleDeleteProduct
+    handleDeleteProduct,
+    navigateToTab,
+
+    enterAsCashier: function () {
+      CampusStoreService.setCurrentRole('cashier');
+      syncRoleUI();
+      refreshAllViews();
+      navigateToTab('pos-tab');
+      showToast('Cashier Station Active', 'Terminal C001 ready. Select products and enter quantities to checkout.', 'info');
+    },
+
+    enterAsStoreStaff: function () {
+      CampusStoreService.setCurrentRole('store_operations');
+      syncRoleUI();
+      refreshAllViews();
+      navigateToTab('inventory-tab');
+      showToast('Store Operations Desk Active', 'ID S001 ready. You can catalog new products, update prices, and restock inventory.', 'info');
+    },
+
+    quickTestNormal: function () {
+      CampusStoreService.setCurrentRole('cashier');
+      syncRoleUI();
+      selectedProductId = 'P001'; // Notebook
+      navigateToTab('pos-tab');
+      refreshAllViews();
+      if (elements.checkoutQtyInput) elements.checkoutQtyInput.value = 2;
+      updateLiveCalculation();
+      showToast('Normal Purchase Prepared', 'Notebook (P001) selected with 2 units (₹120.00). Click Complete Checkout!', 'success');
+    },
+
+    quickTestOversell: function () {
+      CampusStoreService.setCurrentRole('cashier');
+      syncRoleUI();
+      selectedProductId = 'P003'; // Water Bottle (stock 8)
+      navigateToTab('pos-tab');
+      refreshAllViews();
+      if (elements.checkoutQtyInput) elements.checkoutQtyInput.value = 15;
+      updateLiveCalculation();
+      showToast('Oversell Demo Prepared', 'Water Bottle (P003) set to 15 units (Stock is only 8). Click Complete Checkout to verify FR-10 rejection!', 'warning');
+    },
+
+    quickTestLowStock: function () {
+      navigateToTab('inventory-tab');
+      if (elements.invFilterLowStockOnly) {
+        elements.invFilterLowStockOnly.checked = true;
+      }
+      renderInventoryTable();
+      showToast('Low-Stock Filter Applied', 'Displaying products at or below alert thresholds (e.g. Water Bottle P003).', 'info');
+    },
+
+    openPythonGuideModal: function () {
+      const modalEl = document.getElementById('pythonModal');
+      if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    }
   };
 
   // Run init on DOMContentLoaded
