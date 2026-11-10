@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Campus Store Inventory & Sequential Checkout System</title>
+  <title>Campus Store Inventory &amp; Sequential Checkout System</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,629 +14,701 @@
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary-subtle">
-    <div class="container-fluid px-3 px-lg-4">
-      <a class="navbar-brand d-flex align-items-center fw-bold" href="#">
-        <i class="bi bi-shop-window me-2 text-warning fs-4"></i>
-        <span>Campus Store</span>
-        <span class="navbar-brand-badge">Sequential POS</span>
-      </a>
+  <!-- ======================================================== -->
+  <!-- SCREEN 1: STANDALONE WELCOME PAGE (Shown on Initial Load) -->
+  <!-- ======================================================== -->
+  <div id="welcome-screen" class="view-screen">
+    
+    <!-- Welcome Screen Navbar -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary-subtle">
+      <div class="container-fluid px-3 px-lg-4">
+        <a class="navbar-brand d-flex align-items-center fw-bold" href="#">
+          <i class="bi bi-shop-window me-2 text-warning fs-4"></i>
+          <span>Campus Store</span>
+          <span class="navbar-brand-badge">Welcome Portal</span>
+        </a>
 
-      <!-- Right Controls: Active Role Indicator + Role Switcher Simulation -->
-      <div class="d-flex align-items-center gap-3 ms-auto">
-        <div id="navbar-role-badge" class="role-pill cashier">
-          <i class="bi bi-person-badge"></i> Cashier (C001)
-        </div>
-
-        <div class="input-group input-group-sm" style="max-width: 250px;">
-          <label class="input-group-text bg-secondary text-white border-0" for="role-selector">
-            <i class="bi bi-arrow-repeat me-1"></i> Role:
-          </label>
-          <select id="role-selector" class="form-select form-select-sm bg-light text-dark fw-bold border-0">
-            <option value="cashier">Cashier (C001)</option>
-            <option value="store_operations">Store Operations Staff (S001)</option>
-          </select>
-        </div>
-
-        <!-- Reset Sample Data Button -->
-        <button class="btn btn-sm btn-outline-warning text-nowrap" data-bs-toggle="modal" data-bs-target="#resetModal" title="Reset to official sample data">
-          <i class="bi bi-arrow-counterclockwise"></i> Reset Sample Data
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Role Notice Banner -->
-  <div class="container-fluid px-3 px-lg-4 pt-3">
-    <div id="role-notice-container"></div>
-  </div>
-
-  <!-- Main Content Container -->
-  <main class="container-fluid px-3 px-lg-4 py-3">
-
-    <!-- KPI Summary Cards Row (FR-13, FR-11) -->
-    <div class="row g-3 mb-4">
-      <div class="col-6 col-md-3">
-        <div class="kpi-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="kpi-title">Active Products</div>
-            <i class="bi bi-boxes fs-4 text-primary opacity-75"></i>
-          </div>
-          <div class="kpi-value" id="kpi-total-products">0</div>
-          <div class="text-muted small mt-1">Unique catalog SKUs</div>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <button class="btn btn-sm btn-outline-warning text-nowrap" data-bs-toggle="modal" data-bs-target="#resetModal" title="Reset sample data">
+            <i class="bi bi-arrow-counterclockwise"></i> Reset Data
+          </button>
+          <button class="btn btn-sm btn-primary fw-bold text-nowrap shadow-sm" onclick="window.CampusStoreApp.enterMainApp('pos-tab')">
+            Launch Main POS <i class="bi bi-arrow-right ms-1"></i>
+          </button>
         </div>
       </div>
+    </header>
 
-      <div class="col-6 col-md-3">
-        <div class="kpi-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="kpi-title">Low Stock Alert</div>
-            <i class="bi bi-exclamation-triangle fs-4 text-danger opacity-75"></i>
-          </div>
-          <div class="kpi-value" id="kpi-low-stock">0</div>
-          <div class="text-muted small mt-1">&le; configured thresholds</div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="kpi-card kpi-sales">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="kpi-title">Total Sales Revenue</div>
-            <i class="bi bi-currency-rupee fs-4 text-success opacity-75"></i>
-          </div>
-          <div class="kpi-value" id="kpi-total-sales">₹0.00</div>
-          <div class="text-muted small mt-1">Cumulative sales</div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="kpi-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="kpi-title">Transactions</div>
-            <i class="bi bi-receipt-cutoff fs-4 text-primary opacity-75"></i>
-          </div>
-          <div class="kpi-value" id="kpi-transactions">0</div>
-          <div class="text-muted small mt-1">Completed checkouts</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Navigation Tabs -->
-    <ul class="nav nav-pills mb-3" id="mainTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="welcome-tab" data-bs-toggle="pill" data-bs-target="#tab-welcome" type="button" role="tab">
-          <i class="bi bi-house-door-fill me-1"></i> Welcome
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pos-tab" data-bs-toggle="pill" data-bs-target="#tab-pos" type="button" role="tab">
-          <i class="bi bi-cart3 me-1"></i> Checkout / POS
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="inventory-tab" data-bs-toggle="pill" data-bs-target="#tab-inventory" type="button" role="tab">
-          <i class="bi bi-box-seam me-1"></i> Product Inventory
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="history-tab" data-bs-toggle="pill" data-bs-target="#tab-history" type="button" role="tab">
-          <i class="bi bi-clock-history me-1"></i> Checkout History
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="summary-tab" data-bs-toggle="pill" data-bs-target="#tab-summary" type="button" role="tab">
-          <i class="bi bi-graph-up-arrow me-1"></i> Sales Summary
-        </button>
-      </li>
-    </ul>
-
-    <!-- Tab Contents -->
-    <div class="tab-content" id="mainTabContent">
-
-      <!-- ========================================== -->
-      <!-- TAB 0: WELCOME & SYSTEM PORTAL (Unique Landing) -->
-      <!-- ========================================== -->
-      <div class="tab-pane fade show active" id="tab-welcome" role="tabpanel">
-        
-        <!-- Hero Section -->
-        <div class="welcome-hero mb-4">
-          <div class="row align-items-center">
-            <div class="col-lg-8">
-              <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                <span class="welcome-badge-tag">
-                  <span class="pulse-dot-green"></span>
-                  System Online &bull; Invariant Guard Active
-                </span>
-                <span class="welcome-badge-tag">
-                  <i class="bi bi-mortarboard-fill text-warning"></i> College OJT Engineering Project
-                </span>
-                <span class="welcome-badge-tag">
-                  <i class="bi bi-hdd-network text-info"></i> Sequential Engine v2.0
-                </span>
-              </div>
-              <h1 class="display-6 fw-bold mb-2">Campus Store Operations &amp; Sequential Checkout</h1>
-              <p class="lead mb-3 text-light opacity-90 fs-6">
-                A dual-role retail inventory and sequential POS terminal built with client-side atomic transactions, role-enforced security logic, and real-time stock integrity verification.
-              </p>
-              <div class="d-flex flex-wrap gap-2 pt-1">
-                <button class="btn btn-primary fw-bold px-3 py-2 shadow-sm" onclick="window.CampusStoreApp.enterAsCashier()">
-                  <i class="bi bi-person-badge me-1"></i> Launch Cashier Station (C001)
-                </button>
-                <button class="btn btn-outline-light fw-bold px-3 py-2" onclick="window.CampusStoreApp.enterAsStoreStaff()">
-                  <i class="bi bi-box-seam me-1"></i> Open Store Operations Desk (S001)
-                </button>
-                <button class="btn btn-warning fw-bold px-3 py-2 text-dark" onclick="window.CampusStoreApp.openPythonGuideModal()">
-                  <i class="bi bi-terminal me-1"></i> Python Replay Audit
-                </button>
-              </div>
-            </div>
-            <div class="col-lg-4 d-none d-lg-block text-end">
-              <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-25 text-start">
-                <div class="text-uppercase small fw-bold text-warning mb-2">
-                  <i class="bi bi-shield-check me-1"></i> Engineering Guarantees
-                </div>
-                <div class="d-flex align-items-center gap-2 small text-light mb-2">
-                  <i class="bi bi-check-circle-fill text-success"></i> Strict Zero-Oversell (FR-10)
-                </div>
-                <div class="d-flex align-items-center gap-2 small text-light mb-2">
-                  <i class="bi bi-check-circle-fill text-success"></i> Invariant: stock &ge; 0 enforced
-                </div>
-                <div class="d-flex align-items-center gap-2 small text-light mb-2">
-                  <i class="bi bi-check-circle-fill text-success"></i> JS-Enforced Role Separation
-                </div>
-                <div class="d-flex align-items-center gap-2 small text-light">
-                  <i class="bi bi-check-circle-fill text-success"></i> LocalStorage Zero-Backend Persistence
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Role Stations Section -->
-        <div class="mb-4">
-          <div class="d-flex justify-content-between align-items-end mb-3">
-            <div>
-              <h5 class="fw-bold mb-1 text-dark"><i class="bi bi-door-open-fill text-primary me-2"></i>Choose Your Station</h5>
-              <p class="text-muted small mb-0">Select an operational terminal to explore role-specific capabilities and restrictions</p>
-            </div>
-            <span class="badge bg-light text-dark border">Dual-Role Architecture</span>
-          </div>
-
-          <div class="row g-3">
-            <!-- Station 1: Cashier -->
-            <div class="col-md-6">
-              <div class="station-card cashier-station">
-                <div>
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div class="station-icon-box">
-                      <i class="bi bi-cart-check-fill"></i>
-                    </div>
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold">Terminal ID: C001</span>
-                  </div>
-                  <h4 class="fw-bold text-dark mb-1">Cashier Station</h4>
-                  <p class="text-muted small mb-2">Dedicated front-counter point-of-sale terminal for rapid, sequential customer checkouts.</p>
-                  
-                  <ul class="station-feature-list">
-                    <li><i class="bi bi-check-circle-fill"></i> View product catalog with live stock &amp; pricing</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Live Total Calculation (Price &times; Quantity)</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Atomic Stock Decrement on checkout completion</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Instant printable payment receipt generation</li>
-                    <li class="text-danger"><i class="bi bi-x-circle-fill"></i> <strong>Restricted:</strong> Cannot alter prices or add new products</li>
-                  </ul>
-                </div>
-                <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="window.CampusStoreApp.enterAsCashier()">
-                  Enter Cashier Station <i class="bi bi-arrow-right ms-1"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Station 2: Store Operations Staff -->
-            <div class="col-md-6">
-              <div class="station-card staff-station">
-                <div>
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div class="station-icon-box">
-                      <i class="bi bi-boxes"></i>
-                    </div>
-                    <span class="badge bg-purple-subtle text-purple border border-purple-subtle fw-bold" style="background-color: #f3e8ff; color: #7c3aed; border-color: #e9d5ff;">Staff ID: S001</span>
-                  </div>
-                  <h4 class="fw-bold text-dark mb-1">Store Operations Desk</h4>
-                  <p class="text-muted small mb-2">Back-office master inventory control for cataloging, pricing, and threshold management.</p>
-                  
-                  <ul class="station-feature-list">
-                    <li><i class="bi bi-check-circle-fill"></i> Add new products with unique SKU validation</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Restock quantities and update unit pricing</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Configure low-stock alert thresholds (&le; N)</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Delete discontinued merchandise from catalog</li>
-                    <li class="text-danger"><i class="bi bi-x-circle-fill"></i> <strong>Restricted:</strong> Cannot perform customer checkouts</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline-dark w-100 fw-bold py-2 shadow-sm" style="border-color: #7c3aed; color: #7c3aed;" onmouseover="this.style.backgroundColor='#7c3aed';this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent';this.style.color='#7c3aed';" onclick="window.CampusStoreApp.enterAsStoreStaff()">
-                  Enter Store Operations Desk <i class="bi bi-arrow-right ms-1"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Evaluator Quick-Test Sandbox Launchpad -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="fw-bold mb-0 text-dark">
-                <i class="bi bi-lightning-charge-fill text-warning me-2"></i>Evaluator Quick-Test Launchpad
-              </h6>
-              <small class="text-muted">1-Click demonstration scenarios designed for college project evaluation</small>
-            </div>
-            <span class="badge bg-warning-subtle text-dark border border-warning-subtle">Grading Shortcuts</span>
-          </div>
-          <div class="card-body p-3 p-md-4">
-            <div class="row g-2">
-              <div class="col-sm-6 col-lg-3">
-                <button class="btn btn-outline-success w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestNormal()">
-                  <i class="bi bi-cart-check fs-4 text-success d-block mb-1"></i>
-                  <div>
-                    <strong class="d-block text-dark">1. Normal Purchase</strong>
-                    <small class="text-muted">Notebook &times; 2 (₹120) &bull; Validates stock decrement</small>
-                  </div>
-                </button>
-              </div>
-              <div class="col-sm-6 col-lg-3">
-                <button class="btn btn-outline-danger w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestOversell()">
-                  <i class="bi bi-shield-x fs-4 text-danger d-block mb-1"></i>
-                  <div>
-                    <strong class="d-block text-dark">2. Oversell Protection</strong>
-                    <small class="text-muted">Requests 15 of Water Bottle (Stock 8) &bull; Tests FR-10</small>
-                  </div>
-                </button>
-              </div>
-              <div class="col-sm-6 col-lg-3">
-                <button class="btn btn-outline-warning w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestLowStock()">
-                  <i class="bi bi-exclamation-triangle fs-4 text-warning d-block mb-1"></i>
-                  <div>
-                    <strong class="d-block text-dark">3. Low-Stock Radar</strong>
-                    <small class="text-muted">Filters items where stock &le; threshold &bull; Tests FR-11</small>
-                  </div>
-                </button>
-              </div>
-              <div class="col-sm-6 col-lg-3">
-                <button class="btn btn-outline-primary w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.openPythonGuideModal()">
-                  <i class="bi bi-terminal-fill fs-4 text-primary d-block mb-1"></i>
-                  <div>
-                    <strong class="d-block text-dark">4. Python Replay Script</strong>
-                    <small class="text-muted">Backend audit with assert product['stock'] &ge; 0</small>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 Core Pillars of the Architecture -->
-        <div class="mb-3">
-          <h6 class="fw-bold text-dark mb-3"><i class="bi bi-layers-fill text-primary me-2"></i>System Architecture Pillars</h6>
-          <div class="row g-3">
-            <div class="col-sm-6 col-lg-3">
-              <div class="pillar-card">
-                <div class="pillar-icon-box bg-primary-subtle text-primary">
-                  <i class="bi bi-arrow-repeat"></i>
-                </div>
-                <h6 class="fw-bold mb-1">Sequential Pipeline</h6>
-                <p class="text-muted small mb-0">Executes strict 11-step validation ensuring stock verification occurs prior to transaction record generation.</p>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="pillar-card">
-                <div class="pillar-icon-box bg-danger-subtle text-danger">
-                  <i class="bi bi-lock-fill"></i>
-                </div>
-                <h6 class="fw-bold mb-1">Zero-Oversell Lock</h6>
-                <p class="text-muted small mb-0">Rejects any transaction exceeding inventory with zero modification to product stock quantities.</p>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="pillar-card">
-                <div class="pillar-icon-box bg-warning-subtle text-warning">
-                  <i class="bi bi-bell-fill"></i>
-                </div>
-                <h6 class="fw-bold mb-1">Low-Stock Radar</h6>
-                <p class="text-muted small mb-0">Real-time alert highlighting triggered automatically whenever inventory drops below configured thresholds.</p>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="pillar-card">
-                <div class="pillar-icon-box bg-success-subtle text-success">
-                  <i class="bi bi-database-check"></i>
-                </div>
-                <h6 class="fw-bold mb-1">Offline Persistence</h6>
-                <p class="text-muted small mb-0">Browser-native LocalStorage architecture maintaining catalog integrity across browser reloads.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ========================================== -->
-      <!-- TAB 1: POS / CHECKOUT (Cashier View)        -->
-      <!-- ========================================== -->
-      <div class="tab-pane fade" id="tab-pos" role="tabpanel">
-        <div class="row g-4">
-          
-          <!-- Left Column: Product Selection Grid & Filters -->
+    <!-- Welcome Content -->
+    <div class="container-fluid px-3 px-lg-4 py-4">
+      
+      <!-- Hero Section -->
+      <div class="welcome-hero mb-4">
+        <div class="row align-items-center">
           <div class="col-lg-8">
-            <div class="card border-0 shadow-sm mb-3">
-              <div class="card-body p-3">
-                <div class="row g-2 align-items-center">
-                  <div class="col-md-7">
-                    <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                      <input type="text" id="pos-search-input" class="form-control border-start-0" placeholder="Search product name or SKU (e.g. Notebook, P001)...">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+              <span class="welcome-badge-tag">
+                <span class="pulse-dot-green"></span>
+                System Online &bull; Invariant Guard Active
+              </span>
+              <span class="welcome-badge-tag">
+                <i class="bi bi-mortarboard-fill text-warning"></i> College OJT Engineering Project
+              </span>
+              <span class="welcome-badge-tag">
+                <i class="bi bi-hdd-network text-info"></i> Sequential Engine v2.0
+              </span>
+            </div>
+            <h1 class="display-6 fw-bold mb-2">Campus Store Operations &amp; Sequential Checkout</h1>
+            <p class="lead mb-4 text-light opacity-90 fs-6">
+              A dual-role retail inventory and sequential POS terminal built with client-side atomic transactions, role-enforced security logic, and real-time stock integrity verification.
+            </p>
+            <div class="d-flex flex-wrap gap-2 pt-1">
+              <button class="btn btn-primary fw-bold px-3 py-2 shadow-sm" onclick="window.CampusStoreApp.enterAsCashier()">
+                <i class="bi bi-person-badge me-1"></i> Launch Cashier Station (C001)
+              </button>
+              <button class="btn btn-outline-light fw-bold px-3 py-2" onclick="window.CampusStoreApp.enterAsStoreStaff()">
+                <i class="bi bi-box-seam me-1"></i> Open Store Operations Desk (S001)
+              </button>
+              <button class="btn btn-warning fw-bold px-3 py-2 text-dark" onclick="window.CampusStoreApp.openPythonGuideModal()">
+                <i class="bi bi-terminal me-1"></i> Python Replay Audit
+              </button>
+            </div>
+          </div>
+          <div class="col-lg-4 d-none d-lg-block text-end">
+            <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-25 text-start">
+              <div class="text-uppercase small fw-bold text-warning mb-2">
+                <i class="bi bi-shield-check me-1"></i> Engineering Guarantees
+              </div>
+              <div class="d-flex align-items-center gap-2 small text-light mb-2">
+                <i class="bi bi-check-circle-fill text-success"></i> Strict Zero-Oversell (FR-10)
+              </div>
+              <div class="d-flex align-items-center gap-2 small text-light mb-2">
+                <i class="bi bi-check-circle-fill text-success"></i> Invariant: stock &ge; 0 enforced
+              </div>
+              <div class="d-flex align-items-center gap-2 small text-light mb-2">
+                <i class="bi bi-check-circle-fill text-success"></i> JS-Enforced Role Separation
+              </div>
+              <div class="d-flex align-items-center gap-2 small text-light">
+                <i class="bi bi-check-circle-fill text-success"></i> LocalStorage Zero-Backend Persistence
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Choose Your Station Section -->
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+          <div>
+            <h5 class="fw-bold mb-1 text-dark"><i class="bi bi-door-open-fill text-primary me-2"></i>Choose Your Station</h5>
+            <p class="text-muted small mb-0">Select an operational terminal to enter the system with role-specific capabilities</p>
+          </div>
+          <span class="badge bg-light text-dark border">Dual-Role System</span>
+        </div>
+
+        <div class="row g-3">
+          <!-- Station 1: Cashier -->
+          <div class="col-md-6">
+            <div class="station-card cashier-station">
+              <div>
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="station-icon-box">
+                    <i class="bi bi-cart-check-fill"></i>
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold">Terminal ID: C001</span>
+                </div>
+                <h4 class="fw-bold text-dark mb-1">Cashier Station</h4>
+                <p class="text-muted small mb-2">Dedicated front-counter point-of-sale terminal for rapid, sequential customer checkouts.</p>
+                
+                <ul class="station-feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> View product catalog with live stock &amp; pricing</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Live Total Calculation (Price &times; Quantity)</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Atomic Stock Decrement on checkout completion</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Instant printable payment receipt generation</li>
+                  <li class="text-danger"><i class="bi bi-x-circle-fill"></i> <strong>Restricted:</strong> Cannot alter prices or add new products</li>
+                </ul>
+              </div>
+              <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="window.CampusStoreApp.enterAsCashier()">
+                Enter Cashier Station <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Station 2: Store Operations Staff -->
+          <div class="col-md-6">
+            <div class="station-card staff-station">
+              <div>
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="station-icon-box">
+                    <i class="bi bi-boxes"></i>
+                  </div>
+                  <span class="badge bg-purple-subtle text-purple border border-purple-subtle fw-bold" style="background-color: #f3e8ff; color: #7c3aed; border-color: #e9d5ff;">Staff ID: S001</span>
+                </div>
+                <h4 class="fw-bold text-dark mb-1">Store Operations Desk</h4>
+                <p class="text-muted small mb-2">Back-office master inventory control for cataloging, pricing, and threshold management.</p>
+                
+                <ul class="station-feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Add new products with unique SKU validation</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Restock quantities and update unit pricing</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Configure low-stock alert thresholds (&le; N)</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Delete discontinued merchandise from catalog</li>
+                  <li class="text-danger"><i class="bi bi-x-circle-fill"></i> <strong>Restricted:</strong> Cannot perform customer checkouts</li>
+                </ul>
+              </div>
+              <button class="btn btn-outline-dark w-100 fw-bold py-2 shadow-sm" style="border-color: #7c3aed; color: #7c3aed;" onmouseover="this.style.backgroundColor='#7c3aed';this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent';this.style.color='#7c3aed';" onclick="window.CampusStoreApp.enterAsStoreStaff()">
+                Enter Store Operations Desk <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evaluator Quick-Test Sandbox Launchpad -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="fw-bold mb-0 text-dark">
+              <i class="bi bi-lightning-charge-fill text-warning me-2"></i>Evaluator Quick-Test Launchpad
+            </h6>
+            <small class="text-muted">1-Click demonstration scenarios designed for college project grading</small>
+          </div>
+          <span class="badge bg-warning-subtle text-dark border border-warning-subtle">Grading Shortcuts</span>
+        </div>
+        <div class="card-body p-3 p-md-4">
+          <div class="row g-2">
+            <div class="col-sm-6 col-lg-3">
+              <button class="btn btn-outline-success w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestNormal()">
+                <i class="bi bi-cart-check fs-4 text-success d-block mb-1"></i>
+                <div>
+                  <strong class="d-block text-dark">1. Normal Purchase</strong>
+                  <small class="text-muted">Notebook &times; 2 (₹120) &bull; Enters POS ready to test</small>
+                </div>
+              </button>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <button class="btn btn-outline-danger w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestOversell()">
+                <i class="bi bi-shield-x fs-4 text-danger d-block mb-1"></i>
+                <div>
+                  <strong class="d-block text-dark">2. Oversell Protection</strong>
+                  <small class="text-muted">Requests 15 of Water Bottle (Stock 8) &bull; Tests FR-10</small>
+                </div>
+              </button>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <button class="btn btn-outline-warning w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.quickTestLowStock()">
+                <i class="bi bi-exclamation-triangle fs-4 text-warning d-block mb-1"></i>
+                <div>
+                  <strong class="d-block text-dark">3. Low-Stock Radar</strong>
+                  <small class="text-muted">Enters inventory filtered to low stock &bull; Tests FR-11</small>
+                </div>
+              </button>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <button class="btn btn-outline-primary w-100 demo-shortcut-btn text-start p-3 h-100" onclick="window.CampusStoreApp.openPythonGuideModal()">
+                <i class="bi bi-terminal-fill fs-4 text-primary d-block mb-1"></i>
+                <div>
+                  <strong class="d-block text-dark">4. Python Replay Script</strong>
+                  <small class="text-muted">Backend audit with assert product['stock'] &ge; 0</small>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Core Pillars of the Architecture -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-layers-fill text-primary me-2"></i>System Architecture Pillars</h6>
+        <div class="row g-3">
+          <div class="col-sm-6 col-lg-3">
+            <div class="pillar-card">
+              <div class="pillar-icon-box bg-primary-subtle text-primary">
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+              <h6 class="fw-bold mb-1">Sequential Pipeline</h6>
+              <p class="text-muted small mb-0">Executes strict 11-step validation ensuring stock verification occurs prior to transaction creation.</p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="pillar-card">
+              <div class="pillar-icon-box bg-danger-subtle text-danger">
+                <i class="bi bi-lock-fill"></i>
+              </div>
+              <h6 class="fw-bold mb-1">Zero-Oversell Lock</h6>
+              <p class="text-muted small mb-0">Rejects any transaction exceeding inventory with zero modification to product stock quantities.</p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="pillar-card">
+              <div class="pillar-icon-box bg-warning-subtle text-warning">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+              <h6 class="fw-bold mb-1">Low-Stock Radar</h6>
+              <p class="text-muted small mb-0">Real-time alert highlighting triggered automatically whenever inventory drops below configured thresholds.</p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="pillar-card">
+              <div class="pillar-icon-box bg-success-subtle text-success">
+                <i class="bi bi-database-check"></i>
+              </div>
+              <h6 class="fw-bold mb-1">Offline Persistence</h6>
+              <p class="text-muted small mb-0">Browser-native LocalStorage architecture maintaining catalog integrity across browser reloads.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Launch Full Dashboard CTA -->
+      <div class="text-center py-2">
+        <button class="btn btn-outline-primary px-4 py-2 fw-bold" onclick="window.CampusStoreApp.enterMainApp('pos-tab')">
+          <i class="bi bi-layout-text-window-reverse me-2"></i>Enter Main Store Dashboard Directly
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Welcome Page Footer -->
+    <footer class="mt-4">
+      <div class="container-fluid px-3 px-lg-4 text-center">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-md-start small">
+            <strong>Campus Store Inventory &amp; Sequential Checkout</strong> &bull; College OJT Project
+          </div>
+          <div class="col-md-6 text-md-end small">
+            Tech Stack: HTML5 &bull; CSS3 &bull; Bootstrap 5 &bull; Vanilla JS &bull; Python 3 Replay
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div> <!-- /#welcome-screen -->
+
+
+  <!-- ======================================================== -->
+  <!-- SCREEN 2: MAIN APPLICATION DASHBOARD (Hidden Initially)  -->
+  <!-- ======================================================== -->
+  <div id="main-app-screen" class="view-screen d-none">
+    
+    <!-- Main Top Navigation Bar with BACK BUTTON -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary-subtle">
+      <div class="container-fluid px-3 px-lg-4">
+        
+        <div class="d-flex align-items-center gap-2">
+          <!-- PROMINENT BACK BUTTON -->
+          <button class="btn btn-sm btn-outline-warning text-nowrap fw-bold me-1" onclick="window.CampusStoreApp.returnToWelcome()" title="Return to the Welcome Page">
+            <i class="bi bi-arrow-left-circle-fill me-1"></i> Back to Welcome
+          </button>
+
+          <a class="navbar-brand d-flex align-items-center fw-bold mb-0" href="#">
+            <i class="bi bi-shop-window me-2 text-warning fs-4"></i>
+            <span class="d-none d-sm-inline">Campus Store</span>
+            <span class="navbar-brand-badge">Sequential POS</span>
+          </a>
+        </div>
+
+        <!-- Right Controls: Role Indicator + Role Switcher Simulation + Reset Data -->
+        <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
+          <div id="navbar-role-badge" class="role-pill cashier">
+            <i class="bi bi-person-badge"></i> Cashier (C001)
+          </div>
+
+          <div class="input-group input-group-sm d-none d-md-flex" style="max-width: 250px;">
+            <label class="input-group-text bg-secondary text-white border-0" for="role-selector">
+              <i class="bi bi-arrow-repeat me-1"></i> Role:
+            </label>
+            <select id="role-selector" class="form-select form-select-sm bg-light text-dark fw-bold border-0">
+              <option value="cashier">Cashier (C001)</option>
+              <option value="store_operations">Store Operations Staff (S001)</option>
+            </select>
+          </div>
+
+          <button class="btn btn-sm btn-outline-warning text-nowrap" data-bs-toggle="modal" data-bs-target="#resetModal" title="Reset to official sample data">
+            <i class="bi bi-arrow-counterclockwise"></i> Reset Sample Data
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Role Notice Banner -->
+    <div class="container-fluid px-3 px-lg-4 pt-3">
+      <div id="role-notice-container"></div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="container-fluid px-3 px-lg-4 py-3">
+
+      <!-- KPI Summary Cards Row (FR-13, FR-11) -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="kpi-title">Active Products</div>
+              <i class="bi bi-boxes fs-4 text-primary opacity-75"></i>
+            </div>
+            <div class="kpi-value" id="kpi-total-products">0</div>
+            <div class="text-muted small mt-1">Unique catalog SKUs</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="kpi-title">Low Stock Alert</div>
+              <i class="bi bi-exclamation-triangle fs-4 text-danger opacity-75"></i>
+            </div>
+            <div class="kpi-value" id="kpi-low-stock">0</div>
+            <div class="text-muted small mt-1">&le; configured thresholds</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="kpi-card kpi-sales">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="kpi-title">Total Sales Revenue</div>
+              <i class="bi bi-currency-rupee fs-4 text-success opacity-75"></i>
+            </div>
+            <div class="kpi-value" id="kpi-total-sales">₹0.00</div>
+            <div class="text-muted small mt-1">Cumulative sales</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="kpi-title">Transactions</div>
+              <i class="bi bi-receipt-cutoff fs-4 text-primary opacity-75"></i>
+            </div>
+            <div class="kpi-value" id="kpi-transactions">0</div>
+            <div class="text-muted small mt-1">Completed checkouts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <ul class="nav nav-pills mb-3" id="mainTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="pos-tab" data-bs-toggle="pill" data-bs-target="#tab-pos" type="button" role="tab">
+            <i class="bi bi-cart3 me-1"></i> Checkout / POS
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="inventory-tab" data-bs-toggle="pill" data-bs-target="#tab-inventory" type="button" role="tab">
+            <i class="bi bi-box-seam me-1"></i> Product Inventory
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="history-tab" data-bs-toggle="pill" data-bs-target="#tab-history" type="button" role="tab">
+            <i class="bi bi-clock-history me-1"></i> Checkout History
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="summary-tab" data-bs-toggle="pill" data-bs-target="#tab-summary" type="button" role="tab">
+            <i class="bi bi-graph-up-arrow me-1"></i> Sales Summary
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Contents -->
+      <div class="tab-content" id="mainTabContent">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: POS / CHECKOUT (Cashier View)        -->
+        <!-- ========================================== -->
+        <div class="tab-pane fade show active" id="tab-pos" role="tabpanel">
+          <div class="row g-4">
+            
+            <!-- Left Column: Product Selection Grid & Filters -->
+            <div class="col-lg-8">
+              <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                  <div class="row g-2 align-items-center">
+                    <div class="col-md-7">
+                      <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="pos-search-input" class="form-control border-start-0" placeholder="Search product name or SKU (e.g. Notebook, P001)...">
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <select id="pos-category-filter" class="form-select">
+                        <option value="ALL">All Categories</option>
+                        <option value="Stationery">Stationery</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Snacks">Snacks</option>
+                      </select>
                     </div>
                   </div>
-                  <div class="col-md-5">
-                    <select id="pos-category-filter" class="form-select">
-                      <option value="ALL">All Categories</option>
-                      <option value="Stationery">Stationery</option>
-                      <option value="Accessories">Accessories</option>
-                      <option value="Snacks">Snacks</option>
+                </div>
+              </div>
+
+              <!-- Product Selection Grid (FR-01, FR-04, FR-11) -->
+              <div class="row g-3" id="pos-product-grid">
+                <!-- Dynamically populated product cards -->
+              </div>
+            </div>
+
+            <!-- Right Column: Sequential Checkout Form Panel (FR-04 to FR-10) -->
+            <div class="col-lg-4">
+              <div class="checkout-panel">
+                <div class="checkout-panel-header d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 class="fw-bold mb-0"><i class="bi bi-cash-coin me-2 text-primary"></i>Checkout Form</h5>
+                    <small class="text-muted">Sequential Purchase Terminal</small>
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle">C001</span>
+                </div>
+
+                <div class="card-body p-3 p-xl-4">
+
+                  <!-- Step 1: Product Selection Dropdown (FR-04) -->
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small text-uppercase text-muted">1. Select Product for Purchase</label>
+                    <select id="pos-product-select-dropdown" class="form-select fw-semibold">
+                      <!-- Populated dynamically -->
                     </select>
                   </div>
+
+                  <!-- Product Showcase Box -->
+                  <div id="checkout-selected-box" class="selected-product-box mb-3">
+                    <!-- Dynamic product details rendered here -->
+                  </div>
+
+                  <!-- Product Price & Available Stock Preview (FR-04) -->
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <div class="p-2 border rounded bg-white text-center">
+                        <small class="text-muted d-block text-uppercase" style="font-size: 0.72rem;">Unit Price</small>
+                        <span class="fw-bold fs-5 text-primary" id="checkout-unit-price">₹0.00</span>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-2 border rounded bg-white text-center">
+                        <small class="text-muted d-block text-uppercase" style="font-size: 0.72rem;">Available Stock</small>
+                        <span class="fw-bold fs-5" id="checkout-available-stock">0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Step 2: Quantity Input (FR-05) -->
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <label class="form-label fw-bold small text-uppercase text-muted mb-0">2. Purchase Quantity</label>
+                      <span id="checkout-stock-badge" class="badge bg-secondary">Stock Check</span>
+                    </div>
+                    <div class="input-group">
+                      <button class="btn btn-outline-secondary" type="button" id="btn-qty-minus"><i class="bi bi-dash"></i></button>
+                      <input type="number" id="checkout-quantity-input" class="form-control text-center fw-bold fs-5" value="1" min="1" step="1">
+                      <button class="btn btn-outline-secondary" type="button" id="btn-qty-plus"><i class="bi bi-plus"></i></button>
+                    </div>
+                    <small class="text-muted">Must be a positive whole integer.</small>
+                  </div>
+
+                  <!-- Step 3: Total Amount Before Checkout (FR-07) -->
+                  <div class="price-calculation-box mb-3">
+                    <div class="d-flex justify-content-between text-muted small mb-1">
+                      <span>Calculation:</span>
+                      <span id="checkout-calc-qty">1 unit</span>
+                    </div>
+                    <div class="calculation-total-row">
+                      <span>Total Amount:</span>
+                      <span id="checkout-total-amount">₹0.00</span>
+                    </div>
+                  </div>
+
+                  <!-- Step 4: Checkout Actions (FR-08, FR-09, FR-10) -->
+                  <div class="d-grid gap-2">
+                    <button type="button" id="btn-process-checkout" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                      <i class="bi bi-check2-circle me-1"></i> Complete Checkout
+                    </button>
+                    <button type="button" id="btn-test-oversell" class="btn btn-outline-warning btn-sm" title="Simulates a quantity exceeding available stock to demonstrate FR-10 rejection">
+                      <i class="bi bi-bug me-1"></i> Demo: Test Oversell Scenario
+                    </button>
+                  </div>
+
+                  <!-- Alert Messages Container -->
+                  <div id="checkout-alert-box" class="alert alert-danger mt-3 mb-0 d-none" role="alert">
+                    <!-- Live validation error or rejection message -->
+                  </div>
+
                 </div>
               </div>
-            </div>
-
-            <!-- Product Selection Grid (FR-01, FR-04, FR-11) -->
-            <div class="row g-3" id="pos-product-grid">
-              <!-- Dynamically populated product cards -->
             </div>
           </div>
+        </div>
 
-          <!-- Right Column: Sequential Checkout Form Panel (FR-04 to FR-10) -->
-          <div class="col-lg-4">
-            <div class="checkout-panel">
-              <div class="checkout-panel-header d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 class="fw-bold mb-0"><i class="bi bi-cash-coin me-2 text-primary"></i>Checkout Form</h5>
-                  <small class="text-muted">Sequential Purchase Terminal</small>
+        <!-- ========================================== -->
+        <!-- TAB 2: PRODUCT INVENTORY (Store Staff)     -->
+        <!-- ========================================== -->
+        <div class="tab-pane fade" id="tab-inventory" role="tabpanel">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom">
+              <div class="row g-2 align-items-center justify-content-between">
+                
+                <div class="col-md-4">
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="inv-search-input" class="form-control border-start-0" placeholder="Filter by product name or ID...">
+                  </div>
                 </div>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">C001</span>
-              </div>
 
-              <div class="card-body p-3 p-xl-4">
-
-                <!-- Step 1: Product Selection Dropdown (FR-04) -->
-                <div class="mb-3">
-                  <label class="form-label fw-bold small text-uppercase text-muted">1. Select Product for Purchase</label>
-                  <select id="pos-product-select-dropdown" class="form-select fw-semibold">
-                    <!-- Populated dynamically -->
+                <div class="col-md-3">
+                  <select id="inv-category-filter" class="form-select">
+                    <option value="ALL">All Categories</option>
+                    <option value="Stationery">Stationery</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Snacks">Snacks</option>
                   </select>
                 </div>
 
-                <!-- Product Showcase Box -->
-                <div id="checkout-selected-box" class="selected-product-box mb-3">
-                  <!-- Dynamic product details rendered here -->
-                </div>
-
-                <!-- Product Price & Available Stock Preview (FR-04) -->
-                <div class="row g-2 mb-3">
-                  <div class="col-6">
-                    <div class="p-2 border rounded bg-white text-center">
-                      <small class="text-muted d-block text-uppercase" style="font-size: 0.72rem;">Unit Price</small>
-                      <span class="fw-bold fs-5 text-primary" id="checkout-unit-price">₹0.00</span>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="p-2 border rounded bg-white text-center">
-                      <small class="text-muted d-block text-uppercase" style="font-size: 0.72rem;">Available Stock</small>
-                      <span class="fw-bold fs-5" id="checkout-available-stock">0</span>
-                    </div>
+                <div class="col-md-2 text-md-center">
+                  <div class="form-check form-switch d-inline-block">
+                    <input class="form-check-input" type="checkbox" role="switch" id="inv-filter-low-stock">
+                    <label class="form-check-label small fw-semibold" for="inv-filter-low-stock">Low Stock Only</label>
                   </div>
                 </div>
 
-                <!-- Step 2: Quantity Input (FR-05) -->
-                <div class="mb-3">
-                  <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label class="form-label fw-bold small text-uppercase text-muted mb-0">2. Purchase Quantity</label>
-                    <span id="checkout-stock-badge" class="badge bg-secondary">Stock Check</span>
-                  </div>
-                  <div class="input-group">
-                    <button class="btn btn-outline-secondary" type="button" id="btn-qty-minus"><i class="bi bi-dash"></i></button>
-                    <input type="number" id="checkout-quantity-input" class="form-control text-center fw-bold fs-5" value="1" min="1" step="1">
-                    <button class="btn btn-outline-secondary" type="button" id="btn-qty-plus"><i class="bi bi-plus"></i></button>
-                  </div>
-                  <small class="text-muted">Must be a positive whole integer.</small>
-                </div>
-
-                <!-- Step 3: Total Amount Before Checkout (FR-07) -->
-                <div class="price-calculation-box mb-3">
-                  <div class="d-flex justify-content-between text-muted small mb-1">
-                    <span>Calculation:</span>
-                    <span id="checkout-calc-qty">1 unit</span>
-                  </div>
-                  <div class="calculation-total-row">
-                    <span>Total Amount:</span>
-                    <span id="checkout-total-amount">₹0.00</span>
-                  </div>
-                </div>
-
-                <!-- Step 4: Checkout Actions (FR-08, FR-09, FR-10) -->
-                <div class="d-grid gap-2">
-                  <button type="button" id="btn-process-checkout" class="btn btn-primary btn-lg fw-bold shadow-sm">
-                    <i class="bi bi-check2-circle me-1"></i> Complete Checkout
-                  </button>
-                  <button type="button" id="btn-test-oversell" class="btn btn-outline-warning btn-sm" title="Simulates a quantity exceeding available stock to demonstrate FR-10 rejection">
-                    <i class="bi bi-bug me-1"></i> Demo: Test Oversell Scenario
+                <div class="col-md-3 text-end">
+                  <button type="button" id="btn-add-product" class="btn btn-primary fw-semibold">
+                    <i class="bi bi-plus-lg me-1"></i> Add New Product
                   </button>
                 </div>
 
-                <!-- Alert Messages Container -->
-                <div id="checkout-alert-box" class="alert alert-danger mt-3 mb-0 d-none" role="alert">
-                  <!-- Live validation error or rejection message -->
-                </div>
+              </div>
+            </div>
 
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0 table-custom">
+                <thead>
+                  <tr>
+                    <th style="width: 100px;">Product ID</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Selling Price</th>
+                    <th>Available Stock</th>
+                    <th>Threshold</th>
+                    <th>Status</th>
+                    <th class="text-end" style="width: 160px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-table-body">
+                  <!-- Dynamically populated inventory rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: CHECKOUT HISTORY (FR-14)             -->
+        <!-- ========================================== -->
+        <div class="tab-pane fade" id="tab-history" role="tabpanel">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom">
+              <div class="row align-items-center justify-content-between">
+                <div class="col-md-5">
+                  <h5 class="fw-bold mb-0"><i class="bi bi-journal-text me-2 text-primary"></i>Sequential Checkout Log</h5>
+                </div>
+                <div class="col-md-4">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="history-search-input" class="form-control border-start-0" placeholder="Search by Transaction ID, Product, or Cashier...">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0 table-custom">
+                <thead>
+                  <tr>
+                    <th>Transaction ID</th>
+                    <th>Date & Time</th>
+                    <th>Purchased Product</th>
+                    <th class="text-center">Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Amount</th>
+                    <th>Cashier ID</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body">
+                  <!-- Dynamically populated transaction history rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: SALES SUMMARY & ANALYTICS (FR-13)   -->
+        <!-- ========================================== -->
+        <div class="tab-pane fade" id="tab-summary" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                  <h5 class="fw-bold mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Sales Overview</h5>
+                </div>
+                <div class="card-body p-4">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                      <span class="fw-semibold">Total Revenue Generated</span>
+                      <span class="fs-5 fw-bold text-success" id="summary-total-revenue">₹0.00</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                      <span class="fw-semibold">Completed Checkout Transactions</span>
+                      <span class="fs-5 fw-bold text-primary" id="summary-total-orders">0</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                      <span class="fw-semibold">Total Product Units Sold</span>
+                      <span class="fs-5 fw-bold text-dark" id="summary-units-sold">0</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                      <span class="fw-semibold">Average Order Value</span>
+                      <span class="fs-5 fw-bold text-info" id="summary-avg-order">₹0.00</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                      <span class="fw-semibold">Today's Sales Performance</span>
+                      <span class="fs-6 fw-bold text-secondary" id="summary-today-revenue">₹0.00</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                  <h5 class="fw-bold mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>Category Inventory & Revenue Breakdown</h5>
+                </div>
+                <div class="card-body p-4" id="summary-category-breakdown">
+                  <!-- Dynamically populated category breakdown bars -->
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
+    </main>
 
-      <!-- ========================================== -->
-      <!-- TAB 2: PRODUCT INVENTORY (Store Staff)     -->
-      <!-- ========================================== -->
-      <div class="tab-pane fade" id="tab-inventory" role="tabpanel">
-        <div class="card border-0 shadow-sm">
-          <div class="card-header bg-white py-3 border-bottom">
-            <div class="row g-2 align-items-center justify-content-between">
-              
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                  <input type="text" id="inv-search-input" class="form-control border-start-0" placeholder="Filter by product name or ID...">
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <select id="inv-category-filter" class="form-select">
-                  <option value="ALL">All Categories</option>
-                  <option value="Stationery">Stationery</option>
-                  <option value="Accessories">Accessories</option>
-                  <option value="Snacks">Snacks</option>
-                </select>
-              </div>
-
-              <div class="col-md-2 text-md-center">
-                <div class="form-check form-switch d-inline-block">
-                  <input class="form-check-input" type="checkbox" role="switch" id="inv-filter-low-stock">
-                  <label class="form-check-label small fw-semibold" for="inv-filter-low-stock">Low Stock Only</label>
-                </div>
-              </div>
-
-              <div class="col-md-3 text-end">
-                <button type="button" id="btn-add-product" class="btn btn-primary fw-semibold">
-                  <i class="bi bi-plus-lg me-1"></i> Add New Product
-                </button>
-              </div>
-
-            </div>
+    <!-- Main App Footer -->
+    <footer class="mt-auto">
+      <div class="container-fluid px-3 px-lg-4 text-center">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-md-start small">
+            <strong>Campus Store Inventory &amp; Sequential Checkout</strong> &bull; College OJT Project
           </div>
-
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 table-custom">
-              <thead>
-                <tr>
-                  <th style="width: 100px;">Product ID</th>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Selling Price</th>
-                  <th>Available Stock</th>
-                  <th>Threshold</th>
-                  <th>Status</th>
-                  <th class="text-end" style="width: 160px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="inventory-table-body">
-                <!-- Dynamically populated inventory rows -->
-              </tbody>
-            </table>
+          <div class="col-md-6 text-md-end small">
+            Tech Stack: HTML5 &bull; CSS3 &bull; Bootstrap 5 &bull; Vanilla JS &bull; Python 3 Replay
           </div>
         </div>
       </div>
+    </footer>
 
-      <!-- ========================================== -->
-      <!-- TAB 3: CHECKOUT HISTORY (FR-14)             -->
-      <!-- ========================================== -->
-      <div class="tab-pane fade" id="tab-history" role="tabpanel">
-        <div class="card border-0 shadow-sm">
-          <div class="card-header bg-white py-3 border-bottom">
-            <div class="row align-items-center justify-content-between">
-              <div class="col-md-5">
-                <h5 class="fw-bold mb-0"><i class="bi bi-journal-text me-2 text-primary"></i>Sequential Checkout Log</h5>
-              </div>
-              <div class="col-md-4">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                  <input type="text" id="history-search-input" class="form-control border-start-0" placeholder="Search by Transaction ID, Product, or Cashier...">
-                </div>
-              </div>
-            </div>
-          </div>
+  </div> <!-- /#main-app-screen -->
 
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 table-custom">
-              <thead>
-                <tr>
-                  <th>Transaction ID</th>
-                  <th>Date & Time</th>
-                  <th>Purchased Product</th>
-                  <th class="text-center">Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Total Amount</th>
-                  <th>Cashier ID</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="history-table-body">
-                <!-- Dynamically populated transaction history rows -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ========================================== -->
-      <!-- TAB 4: SALES SUMMARY & ANALYTICS (FR-13)   -->
-      <!-- ========================================== -->
-      <div class="tab-pane fade" id="tab-summary" role="tabpanel">
-        <div class="row g-4">
-          <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-              <div class="card-header bg-white py-3 border-bottom">
-                <h5 class="fw-bold mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Sales Overview</h5>
-              </div>
-              <div class="card-body p-4">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span class="fw-semibold">Total Revenue Generated</span>
-                    <span class="fs-5 fw-bold text-success" id="summary-total-revenue">₹0.00</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span class="fw-semibold">Completed Checkout Transactions</span>
-                    <span class="fs-5 fw-bold text-primary" id="summary-total-orders">0</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span class="fw-semibold">Total Product Units Sold</span>
-                    <span class="fs-5 fw-bold text-dark" id="summary-units-sold">0</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span class="fw-semibold">Average Order Value</span>
-                    <span class="fs-5 fw-bold text-info" id="summary-avg-order">₹0.00</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span class="fw-semibold">Today's Sales Performance</span>
-                    <span class="fs-6 fw-bold text-secondary" id="summary-today-revenue">₹0.00</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-              <div class="card-header bg-white py-3 border-bottom">
-                <h5 class="fw-bold mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>Category Inventory & Revenue Breakdown</h5>
-              </div>
-              <div class="card-body p-4" id="summary-category-breakdown">
-                <!-- Dynamically populated category breakdown bars -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
 
   <!-- ========================================== -->
   <!-- MODAL: ADD / EDIT PRODUCT (FR-02, FR-03)   -->
@@ -785,20 +857,6 @@
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
-  <!-- Footer -->
-  <footer class="mt-auto">
-    <div class="container-fluid px-3 px-lg-4 text-center">
-      <div class="row align-items-center">
-        <div class="col-md-6 text-md-start small">
-          <strong>Campus Store Inventory & Sequential Checkout</strong> &bull; College OJT Project
-        </div>
-        <div class="col-md-6 text-md-end small">
-          Tech Stack: HTML5 &bull; CSS3 &bull; Bootstrap 5 &bull; Vanilla JS &bull; Python 3 Replay
-        </div>
-      </div>
-    </div>
-  </footer>
-
   <!-- Bootstrap 5 Bundle JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -809,4 +867,3 @@
   <script src="js/app.js"></script>
 </body>
 </html>
-

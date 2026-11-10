@@ -1028,6 +1028,47 @@
     }
   }
 
+  /**
+   * Switch between Standalone Welcome Screen and Main Dashboard Screen
+   */
+  function enterMainApp(tabButtonId = 'pos-tab', role = null) {
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const mainScreen = document.getElementById('main-app-screen');
+
+    if (welcomeScreen) welcomeScreen.classList.add('d-none');
+    if (mainScreen) {
+      mainScreen.classList.remove('d-none');
+      mainScreen.classList.add('fade-in');
+    }
+
+    if (role) {
+      CampusStoreService.setCurrentRole(role);
+      syncRoleUI();
+    }
+
+    refreshAllViews();
+
+    if (tabButtonId) {
+      navigateToTab(tabButtonId);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function returnToWelcome() {
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const mainScreen = document.getElementById('main-app-screen');
+
+    if (mainScreen) mainScreen.classList.add('d-none');
+    if (welcomeScreen) {
+      welcomeScreen.classList.remove('d-none');
+      welcomeScreen.classList.add('fade-in');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Welcome Portal', 'Returned to the Welcome Screen.', 'info');
+  }
+
   // Export methods for inline HTML onclick handlers
   window.CampusStoreApp = {
     switchRole: function (role) {
@@ -1040,28 +1081,22 @@
     openEditProductModal,
     handleDeleteProduct,
     navigateToTab,
+    enterMainApp,
+    returnToWelcome,
 
     enterAsCashier: function () {
-      CampusStoreService.setCurrentRole('cashier');
-      syncRoleUI();
-      refreshAllViews();
-      navigateToTab('pos-tab');
+      enterMainApp('pos-tab', 'cashier');
       showToast('Cashier Station Active', 'Terminal C001 ready. Select products and enter quantities to checkout.', 'info');
     },
 
     enterAsStoreStaff: function () {
-      CampusStoreService.setCurrentRole('store_operations');
-      syncRoleUI();
-      refreshAllViews();
-      navigateToTab('inventory-tab');
+      enterMainApp('inventory-tab', 'store_operations');
       showToast('Store Operations Desk Active', 'ID S001 ready. You can catalog new products, update prices, and restock inventory.', 'info');
     },
 
     quickTestNormal: function () {
-      CampusStoreService.setCurrentRole('cashier');
-      syncRoleUI();
+      enterMainApp('pos-tab', 'cashier');
       selectedProductId = 'P001'; // Notebook
-      navigateToTab('pos-tab');
       refreshAllViews();
       if (elements.checkoutQtyInput) elements.checkoutQtyInput.value = 2;
       updateLiveCalculation();
@@ -1069,10 +1104,8 @@
     },
 
     quickTestOversell: function () {
-      CampusStoreService.setCurrentRole('cashier');
-      syncRoleUI();
+      enterMainApp('pos-tab', 'cashier');
       selectedProductId = 'P003'; // Water Bottle (stock 8)
-      navigateToTab('pos-tab');
       refreshAllViews();
       if (elements.checkoutQtyInput) elements.checkoutQtyInput.value = 15;
       updateLiveCalculation();
@@ -1080,7 +1113,7 @@
     },
 
     quickTestLowStock: function () {
-      navigateToTab('inventory-tab');
+      enterMainApp('inventory-tab', 'store_operations');
       if (elements.invFilterLowStockOnly) {
         elements.invFilterLowStockOnly.checked = true;
       }
