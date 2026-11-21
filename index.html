@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAMPUS POS — Next-Gen Retail & Inventory Architecture</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#2B2D31',
+            brandSurface: '#34373D',
+            brandSurfaceHover: '#3F434A',
+            brandSilver: '#D9DADC',
+            brandMuted: '#9FA3A9',
+            brandYellow: '#FFC93C',
+            brandYellowHover: '#FFD563',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #2B2D31;
+      color: #D9DADC;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #2B2D31;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3F434A;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FFC93C;
+    }
+
+    /* Animated Glow & Pulse */
+    .glow-yellow {
+      box-shadow: 0 0 25px rgba(255, 201, 60, 0.25);
+    }
+
+    .glow-yellow-lg {
+      box-shadow: 0 0 50px rgba(255, 201, 60, 0.35);
+    }
+
+    /* Diagonal Split Login Screen Animation */
+    .auth-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diagonal-bg {
+      position: absolute;
+      top: -15%;
+      right: -20%;
+      width: 70%;
+      height: 130%;
+      background: linear-gradient(135deg, #FFC93C 0%, #D9DADC 100%);
+      transform: rotate(14deg);
+      transform-origin: bottom left;
+      z-index: 10;
+      transition: all 0.75s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .auth-card.active-register .diagonal-bg {
+      right: 50%;
+      transform: rotate(-14deg);
+    }
+
+    .form-pane {
+      transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s ease;
+    }
+
+    .auth-card.active-register .login-pane {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .auth-card.active-register .register-pane {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .register-pane {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .welcome-panel {
+      transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s ease;
+    }
+
+    .auth-card.active-register .welcome-right {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .auth-card.active-register .welcome-left {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .welcome-left {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Transition Views */
+    .view-section {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .view-hidden {
+      display: none !important;
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    /* Custom Radio Pill Styles */
+    .role-pill input:checked+div {
+      background-color: #FFC93C;
+      color: #2B2D31;
+      border-color: #FFC93C;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between selection:bg-brandYellow selection:text-brandDark">
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 1: MINIMALIST WELCOME / ENTRANCE PAGE                               -->
+  <!-- ========================================================================= -->
+  <section id="viewWelcome"
+    class="view-section min-h-screen w-full flex flex-col justify-between items-center p-6 relative overflow-hidden">
+    <!-- Subtle Background Grid Effect -->
+    <div
+      class="absolute inset-0 bg-[radial-gradient(#3F434A_1px,transparent_1px)] [background-size:24px_24px] opacity-30 pointer-events-none">
+    </div>
+
+    <!-- Top Minimalist Status Indicator -->
+    <div class="w-full max-w-5xl flex justify-between items-center z-10 pt-4">
+      <div
+        class="flex items-center space-x-2 text-xs font-mono text-brandMuted border border-brandSurface px-3 py-1.5 rounded-full bg-brandDark/80">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>SYSTEM ONLINE</span>
+        <span class="text-brandSurfaceHover">|</span>
+        <span id="welcomeUtcClock">--:--:-- UTC</span>
+      </div>
+      <div
+        class="text-xs font-mono text-brandMuted border border-brandSurface px-3 py-1.5 rounded-full bg-brandDark/80">
+        v2.4.0 • HIGH THROUGHPUT POS
+      </div>
+    </div>
+
+    <!-- Center Hero Entrance Block -->
+    <div class="my-auto text-center flex flex-col items-center z-10 max-w-2xl px-4">
+      <!-- Geometric Custom Store Logo SVG -->
+      <div class="relative mb-8 group cursor-pointer" onclick="goToView('viewLogin')">
+        <div
+          class="absolute -inset-2 rounded-2xl bg-brandYellow/20 blur-xl group-hover:bg-brandYellow/40 transition duration-500">
+        </div>
+        <div
+          class="relative bg-brandSurface border-2 border-brandYellow p-6 rounded-2xl glow-yellow transition transform group-hover:scale-105 duration-300">
+          <svg class="w-20 h-20 text-brandYellow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer Sequential Microchip Pins -->
+            <path
+              d="M20 35H10M20 50H10M20 65H10M80 35H90M80 50H90M80 65H90M35 20V10M50 20V10M65 20V10M35 80V90M50 80V90M65 80V90"
+              stroke="#D9DADC" stroke-width="4" stroke-linecap="round" />
+            <!-- Chip Main Body -->
+            <rect x="20" y="20" width="60" height="60" rx="10" fill="#2B2D31" stroke="#FFC93C" stroke-width="4" />
+            <!-- Inner Micro Circuit Lines -->
+            <rect x="30" y="30" width="40" height="40" rx="6" stroke="#D9DADC" stroke-width="2"
+              stroke-dasharray="4 2" />
+            <!-- Integrated Retail Shopping Bag Emblem -->
+            <path d="M40 45C40 39.4772 44.4772 35 50 35C55.5228 35 60 39.4772 60 45V48H40V45Z" stroke="#FFC93C"
+              stroke-width="3.5" stroke-linecap="round" />
+            <path d="M36 48H64L67 72H33L36 48Z" fill="#FFC93C" stroke="#FFC93C" stroke-width="2"
+              stroke-linejoin="round" />
+            <circle cx="45" cy="54" r="1.5" fill="#2B2D31" />
+            <circle cx="55" cy="54" r="1.5" fill="#2B2D31" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Store Title -->
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-3">
+        <span class="text-brandSilver">CAMPUS</span>
+        <span class="text-brandYellow">POS</span>
+      </h1>
+
+      <p class="text-brandMuted text-base md:text-lg mb-8 max-w-md font-medium">
+        Deterministic sequential checkout engine & high-throughput inventory control center.
+      </p>
+
+      <!-- Entrance Action Button -->
+      <button onclick="goToView('viewLogin')"
+        class="group relative px-8 py-4 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-extrabold text-lg rounded-xl shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-3 glow-yellow">
+        <span>ENTER STORE</span>
+        <i class="fa-solid font-bold fa-arrow-right group-hover:translate-x-1.5 transition-transform duration-200"></i>
+      </button>
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="z-10 pb-4 text-xs text-brandMuted font-mono">
+      Designed for high-density campus retail operations • Secure & atomic state lock
+    </div>
+  </section>
+
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 2: ANIMATED DIAGONAL SPLIT-SCREEN LOGIN & REGISTER PAGE             -->
+  <!-- ========================================================================= -->
+  <section id="viewLogin"
+    class="view-section view-hidden min-h-screen w-full flex items-center justify-center p-4 relative">
+
+    <!-- Top Return to Welcome Button -->
+    <button onclick="goToView('viewWelcome')"
+      class="absolute top-6 left-6 text-sm font-semibold text-brandSilver hover:text-brandYellow flex items-center space-x-2 bg-brandSurface px-4 py-2 rounded-lg border border-brandSilver/10 transition duration-200 z-50">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span>Back to Entrance</span>
+    </button>
+
+    <!-- Main Auth Container Card -->
+    <div id="authCard"
+      class="auth-card relative w-full max-w-4xl h-[560px] bg-brandSurface border-2 border-brandYellow rounded-2xl shadow-2xl overflow-hidden glow-yellow">
+
+      <!-- Animated Diagonal Gradient Backdrop -->
+      <div class="diagonal-bg"></div>
+
+      <!-- --------------------------------------------------------------------- -->
+      <!-- LOGIN FORM PANE (Left Side) -->
+      <!-- --------------------------------------------------------------------- -->
+      <div
+        class="form-pane login-pane absolute top-0 left-0 w-full md:w-1/2 h-full flex flex-col justify-center px-8 md:px-12 z-20">
+        <div class="flex items-center space-x-2 text-brandYellow text-xs font-bold tracking-wider uppercase mb-1">
+          <i class="fa-solid fa-store"></i>
+          <span>Campus POS Access</span>
+        </div>
+        <h2 class="text-3xl font-bold text-white mb-6">Operator Sign In</h2>
+
+        <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+          <!-- Operator ID / Username -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Operator ID /
+              Username</label>
+            <div class="relative">
+              <input type="text" id="loginUsername" required value="Cashier_C001"
+                class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
+                placeholder="Enter operator handle...">
+              <i class="fa-solid fa-user absolute left-3 top-3.5 text-brandMuted text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="loginPassword" required value="password123"
+                class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
+                placeholder="••••••••">
+              <i class="fa-solid fa-lock absolute left-3 top-3.5 text-brandMuted text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Role Selection Selector -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1.5">Select Working
+              Role</label>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <label class="role-pill cursor-pointer">
+                <input type="radio" name="loginRole" value="C001" checked class="hidden">
+                <div
+                  class="p-2 border border-brandSilver/20 rounded-lg text-center bg-brandDark/50 text-brandSilver hover:border-brandYellow transition">
+                  <i class="fa-solid fa-cash-register block text-base mb-1"></i>
+                  Cashier (C001)
+                </div>
+              </label>
+              <label class="role-pill cursor-pointer">
+                <input type="radio" name="loginRole" value="S001" class="hidden">
+                <div
+                  class="p-2 border border-brandSilver/20 rounded-lg text-center bg-brandDark/50 text-brandSilver hover:border-brandYellow transition">
+                  <i class="fa-solid fa-user-shield block text-base mb-1"></i>
+                  Store Admin (S001)
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit"
+            class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold rounded-xl shadow-lg transition duration-200 mt-2 flex items-center justify-center space-x-2">
+            <span>Login to Terminal</span>
+            <i class="fa-solid fa-right-to-bracket"></i>
+          </button>
+
+          <!-- Toggle Link -->
+          <p class="text-xs text-center text-brandSilver mt-4">
+            Need a new operator account?
+            <button type="button" onclick="toggleAuthMode(true)"
+              class="text-brandYellow font-bold hover:underline ml-1">
+              Create Account
+            </button>
+          </p>
+        </form>
+      </div>
+
+      <!-- WELCOME BACK OVERLAY (Right Side Overlay on Login) -->
+      <div
+        class="welcome-panel welcome-right absolute top-0 right-0 w-full md:w-1/2 h-full flex flex-col justify-center px-10 md:px-12 z-20 text-brandDark pointer-events-none">
+        <h1 class="text-4xl font-extrabold tracking-tight leading-none mb-3">
+          WELCOME<br>BACK!
+        </h1>
+        <p class="text-sm font-semibold opacity-90 max-w-xs leading-relaxed">
+          Access campus terminal controls, perform real-time inventory checkouts, and maintain operational logs.
+        </p>
+      </div>
+
+      <!-- --------------------------------------------------------------------- -->
+      <!-- REGISTER FORM PANE (Right Side) -->
+      <!-- --------------------------------------------------------------------- -->
+      <div
+        class="form-pane register-pane absolute top-0 right-0 w-full md:w-1/2 h-full flex flex-col justify-center px-8 md:px-12 z-20">
+        <div class="flex items-center space-x-2 text-brandDark text-xs font-bold tracking-wider uppercase mb-1">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>New Operator Registration</span>
+        </div>
+        <h2 class="text-3xl font-bold text-white mb-6">Create Account</h2>
+
+        <form onsubmit="handleRegisterSubmit(event)" class="space-y-4">
+          <!-- Username -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Operator Name /
+              Handle</label>
+            <div class="relative">
+              <input type="text" id="regUsername" required
+                class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
+                placeholder="e.g. Alex_StoreMgr">
+              <i class="fa-solid fa-user absolute left-3 top-3.5 text-brandMuted text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Campus
+              Email</label>
+            <div class="relative">
+              <input type="email" id="regEmail" required
+                class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
+                placeholder="operator@university.edu">
+              <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-brandMuted text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="regPassword" required
+                class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
+                placeholder="Create secure password">
+              <i class="fa-solid fa-lock absolute left-3 top-3.5 text-brandMuted text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Role Selection -->
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Assigned
+              Role</label>
+            <select id="regRole"
+              class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 rounded-t-md outline-none transition">
+              <option value="C001">Cashier Terminal (C001)</option>
+              <option value="S001">Store Administrator (S001)</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit"
+            class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold rounded-xl shadow-lg transition duration-200 mt-2 flex items-center justify-center space-x-2">
+            <span>Register & Enter</span>
+            <i class="fa-solid fa-user-check"></i>
+          </button>
+
+          <!-- Toggle Link -->
+          <p class="text-xs text-center text-brandSilver mt-4">
+            Already registered?
+            <button type="button" onclick="toggleAuthMode(false)"
+              class="text-brandYellow font-bold hover:underline ml-1">
+              Sign In
+            </button>
+          </p>
+        </form>
+      </div>
+
+      <!-- WELCOME OVERLAY (Left Side Overlay on Register) -->
+      <div
+        class="welcome-panel welcome-left absolute top-0 left-0 w-full md:w-1/2 h-full flex flex-col justify-center px-10 md:px-12 z-20 text-brandDark pointer-events-none">
+        <h1 class="text-4xl font-extrabold tracking-tight leading-none mb-3">
+          JOIN THE<br>TEAM!
+        </h1>
+        <p class="text-sm font-semibold opacity-90 max-w-xs leading-relaxed">
+          Create an operator identity to oversee campus POS operations, inventory allocation, and sales logs.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 3: REDESIGNED INNER MAIN APPLICATION (MODERN POS & INVENTORY HUB)   -->
+  <!-- ========================================================================= -->
+  <section id="viewDashboard" class="view-section view-hidden min-h-screen w-full flex flex-col">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header
+      class="bg-brandSurface border-b border-brandSilver/10 px-6 py-3 sticky top-0 z-40 flex items-center justify-between shadow-lg">
+      <div class="flex items-center space-x-4">
+        <!-- Compact Logo Icon -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="goToView('viewWelcome')">
+          <div class="bg-brandDark p-2 rounded-lg border border-brandYellow text-brandYellow">
+            <svg class="w-6 h-6" viewBox="0 0 100 100" fill="none">
+              <rect x="20" y="20" width="60" height="60" rx="10" stroke="#FFC93C" stroke-width="8" />
+              <path d="M40 45C40 39.4 44.4 35 50 35C55.5 35 60 39.4 60 45V48H40V45Z" stroke="#FFC93C"
+                stroke-width="6" />
+              <path d="M36 48H64L67 72H33L36 48Z" fill="#FFC93C" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="font-extrabold text-base tracking-tight leading-none text-white">
+              CAMPUS<span class="text-brandYellow">POS</span>
+            </h2>
+            <span class="text-[10px] font-mono text-brandMuted">SEQUENTIAL TERMINAL</span>
+          </div>
+        </div>
+
+        <span class="text-brandSilver/20 hidden sm:inline">|</span>
+
+        <!-- Active Role Badge & Switcher -->
+        <div
+          class="hidden sm:flex items-center space-x-2 bg-brandDark px-3 py-1.5 rounded-lg border border-brandSilver/10 text-xs">
+          <span class="text-brandMuted">Active Role:</span>
+          <span id="navRoleBadge" class="font-bold text-brandYellow px-2 py-0.5 bg-brandYellow/10 rounded">
+            C001 (Cashier)
+          </span>
+          <button onclick="toggleActiveRole()" title="Quick Switch Role"
+            class="ml-1 text-brandSilver hover:text-brandYellow text-xs px-1">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Header Tools -->
+      <div class="flex items-center space-x-4">
+        <!-- Live Clock -->
+        <div
+          class="hidden md:flex items-center space-x-2 text-xs font-mono text-brandSilver bg-brandDark/60 px-3 py-1.5 rounded-lg border border-brandSilver/10">
+          <i class="fa-regular fa-clock text-brandYellow"></i>
+          <span id="dashClock">00:00:00</span>
+        </div>
+
+        <!-- Operator User Menu -->
+        <div class="flex items-center space-x-3 bg-brandDark px-3 py-1.5 rounded-xl border border-brandSilver/10">
+          <div
+            class="w-7 h-7 rounded-full bg-brandYellow text-brandDark font-bold flex items-center justify-center text-xs">
+            <span id="userAvatar">C</span>
+          </div>
+          <span id="displayUsername" class="text-xs font-semibold text-white">Cashier_C001</span>
+        </div>
+
+        <!-- Logout Button -->
+        <button onclick="goToView('viewWelcome')"
+          class="bg-brandDark hover:bg-rose-500/20 text-brandSilver hover:text-rose-400 p-2 rounded-lg border border-brandSilver/10 transition text-xs font-semibold flex items-center space-x-1.5"
+          title="Exit to Entrance">
+          <i class="fa-solid fa-power-off text-rose-400"></i>
+          <span class="hidden md:inline">Exit</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col space-y-6">
+
+      <!-- KPI METRIC STRIP -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Metric 1: Catalog Products -->
+        <div
+          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Active SKUs</span>
+            <span id="kpiTotalProducts" class="text-2xl font-bold text-white">6</span>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-brandYellow text-lg border border-brandSilver/10">
+            <i class="fa-solid fa-boxes-stacked"></i>
+          </div>
+        </div>
+
+        <!-- Metric 2: Low Stock Alerts -->
+        <div
+          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Low Stock Items</span>
+            <span id="kpiLowStock" class="text-2xl font-bold text-amber-400">1</span>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-amber-400 text-lg border border-brandSilver/10">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+        </div>
+
+        <!-- Metric 3: Total Sales Revenue -->
+        <div
+          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Total Sales</span>
+            <span id="kpiRevenue" class="text-2xl font-bold text-brandYellow">₹1,240.00</span>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-brandYellow text-lg border border-brandSilver/10">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+        </div>
+
+        <!-- Metric 4: Completed Transactions -->
+        <div
+          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Transactions</span>
+            <span id="kpiTransactions" class="text-2xl font-bold text-white">4</span>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-emerald-400 text-lg border border-brandSilver/10">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSPACE TWO COLUMN LAYOUT -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
+
+        <!-- LEFT COLUMN: Catalog & Inventory Management (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col space-y-4">
+
+          <!-- Section Controls Header & Tabs -->
+          <div class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 space-y-4">
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <!-- Navigation Tabs -->
+              <div class="flex bg-brandDark p-1 rounded-xl border border-brandSilver/10 text-xs font-semibold">
+                <button id="tabCatalog" onclick="switchDashboardTab('catalog')"
+                  class="px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition">
+                  <i class="fa-solid fa-border-all mr-1.5"></i> POS Catalog
+                </button>
+                <button id="tabInventory" onclick="switchDashboardTab('inventory')"
+                  class="px-4 py-2 rounded-lg text-brandSilver hover:text-white transition">
+                  <i class="fa-solid fa-list-check mr-1.5"></i> Inventory Manager
+                </button>
+                <button id="tabHistory" onclick="switchDashboardTab('history')"
+                  class="px-4 py-2 rounded-lg text-brandSilver hover:text-white transition">
+                  <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Sales History
+                </button>
+              </div>
+
+              <!-- Quick Add Product Trigger for Admins -->
+              <button id="btnAddProductModal" onclick="openAddProductModal()"
+                class="hidden bg-brandDark hover:bg-brandSurfaceHover text-brandYellow font-semibold text-xs px-3 py-2 rounded-lg border border-brandYellow/30 transition flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Product</span>
+              </button>
+            </div>
+
+            <!-- Search Bar & Category Filters (Catalog Mode) -->
+            <div id="catalogFilterBar"
+              class="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-brandSilver/10">
+              <!-- Search Box -->
+              <div class="relative w-full sm:w-1/2">
+                <input type="text" id="searchInput" oninput="renderCatalog()" placeholder="Search SKU or product..."
+                  class="w-full bg-brandDark border border-brandSilver/20 focus:border-brandYellow text-white text-xs py-2 px-3 pl-8 rounded-lg outline-none transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-brandMuted text-xs"></i>
+              </div>
+
+              <!-- Category Pills -->
+              <div class="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-1/2 pb-1 sm:pb-0 text-xs">
+                <button onclick="filterCategory('All')"
+                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandYellow text-brandDark font-bold whitespace-nowrap">All</button>
+                <button onclick="filterCategory('Stationery')"
+                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap">Stationery</button>
+                <button onclick="filterCategory('Electronics')"
+                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap">Electronics</button>
+                <button onclick="filterCategory('Accessories')"
+                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap">Accessories</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB CONTENT 1: POS CATALOG CARDS -->
+          <div id="paneCatalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Dynamic catalog items inserted by JS -->
+          </div>
+
+          <!-- TAB CONTENT 2: INVENTORY MANAGER TABLE -->
+          <div id="paneInventory"
+            class="hidden bg-brandSurface border border-brandSilver/15 rounded-xl overflow-hidden">
+            <div class="p-4 border-b border-brandSilver/10 flex justify-between items-center">
+              <div>
+                <h3 class="text-sm font-bold text-white">Stock Allocation & Restock Panel</h3>
+                <p class="text-xs text-brandMuted">Update item stocks and check low-stock thresholds.</p>
+              </div>
+              <button onclick="openAddProductModal()"
+                class="text-xs bg-brandYellow text-brandDark font-bold px-3 py-1.5 rounded-lg hover:bg-brandYellowHover">
+                + New Item
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-brandSilver">
+                <thead class="bg-brandDark text-brandMuted uppercase font-mono border-b border-brandSilver/10">
+                  <tr>
+                    <th class="p-3">SKU</th>
+                    <th class="p-3">Product Name</th>
+                    <th class="p-3">Category</th>
+                    <th class="p-3">Price</th>
+                    <th class="p-3">Current Stock</th>
+                    <th class="p-3 text-right">Quick Action</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTableBody" class="divide-y divide-brandSilver/10">
+                  <!-- Dynamic Inventory Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB CONTENT 3: TRANSACTION SALES HISTORY -->
+          <div id="paneHistory" class="hidden bg-brandSurface border border-brandSilver/15 rounded-xl overflow-hidden">
+            <div class="p-4 border-b border-brandSilver/10">
+              <h3 class="text-sm font-bold text-white">Completed Checkout Receipts</h3>
+              <p class="text-xs text-brandMuted">Audit log of client-side atomic transactions.</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-brandSilver">
+                <thead class="bg-brandDark text-brandMuted uppercase font-mono border-b border-brandSilver/10">
+                  <tr>
+                    <th class="p-3">Receipt ID</th>
+                    <th class="p-3">Timestamp</th>
+                    <th class="p-3">Operator</th>
+                    <th class="p-3">Items Purchased</th>
+                    <th class="p-3 text-right">Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody" class="divide-y divide-brandSilver/10">
+                  <!-- Dynamic Sales Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- RIGHT COLUMN: SEQUENTIAL CHECKOUT & CART TERMINAL (5 cols) -->
+        <div
+          class="lg:col-span-5 bg-brandSurface border-2 border-brandYellow/50 rounded-xl p-5 shadow-xl flex flex-col space-y-4 sticky top-20">
+
+          <div class="flex items-center justify-between border-b border-brandSilver/15 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-cart-shopping text-brandYellow text-base"></i>
+              <h3 class="font-bold text-white text-base">Checkout Terminal</h3>
+            </div>
+            <span
+              class="text-xs font-mono bg-brandDark text-brandYellow border border-brandYellow/30 px-2.5 py-1 rounded-md">
+              ATOMIC QUEUE
+            </span>
+          </div>
+
+          <!-- Active Cart Item List -->
+          <div id="cartItemsContainer" class="flex-1 min-h-[220px] max-h-[340px] overflow-y-auto space-y-2.5 pr-1">
+            <!-- Dynamic Cart Items -->
+          </div>
+
+          <!-- Receipt Pricing Calculation Breakdown -->
+          <div class="bg-brandDark p-4 rounded-xl border border-brandSilver/10 space-y-2 text-xs">
+            <div class="flex justify-between text-brandMuted">
+              <span>Subtotal</span>
+              <span id="cartSubtotal" class="font-mono text-brandSilver">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-brandMuted">
+              <span>Campus Tax / Fee (0%)</span>
+              <span class="font-mono text-brandSilver">₹0.00</span>
+            </div>
+            <div class="border-t border-brandSilver/10 pt-2 flex justify-between items-center">
+              <span class="text-sm font-bold text-white">Total Amount</span>
+              <span id="cartGrandTotal" class="text-xl font-extrabold font-mono text-brandYellow">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Checkout Action Buttons -->
+          <div class="space-y-2">
+            <button onclick="processCheckout()" id="btnCheckout" disabled
+              class="w-full py-3.5 bg-brandYellow hover:bg-brandYellowHover disabled:opacity-40 disabled:hover:bg-brandYellow text-brandDark font-extrabold rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-sm glow-yellow">
+              <i class="fa-solid fa-bolt"></i>
+              <span>Complete Checkout</span>
+            </button>
+
+            <button onclick="clearCart()"
+              class="w-full py-2 bg-transparent hover:bg-brandDark text-brandMuted hover:text-rose-400 font-semibold rounded-lg text-xs transition border border-transparent hover:border-brandSilver/10">
+              Clear Terminal Cart
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- FOOTER BAR -->
+    <footer
+      class="bg-brandSurface/40 border-t border-brandSilver/10 py-3 px-6 text-center text-xs text-brandMuted font-mono">
+      Campus Store Inventory & Sequential Checkout • Engineered with Zero-Race-Condition Atomic Verification
+    </footer>
+  </section>
+
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD NEW PRODUCT (STORE ADMIN TOOL)                                 -->
+  <!-- ========================================================================= -->
+  <div id="modalAddProduct"
+    class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brandSurface border-2 border-brandYellow rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-brandSilver/15 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+          <i class="fa-solid fa-plus-circle text-brandYellow"></i>
+          <span>Add New Catalog Item</span>
+        </h3>
+        <button onclick="closeAddProductModal()" class="text-brandMuted hover:text-white text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateProduct(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-brandMuted mb-1">Product Title</label>
+          <input type="text" id="newProdName" required placeholder="e.g. Graphic Calculator"
+            class="w-full bg-brandDark border border-brandSilver/20 rounded-lg p-2.5 text-xs text-white outline-none focus:border-brandYellow">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted mb-1">SKU Code</label>
+            <input type="text" id="newProdSKU" required placeholder="P007"
+              class="w-full bg-brandDark border border-brandSilver/20 rounded-lg p-2.5 text-xs text-white outline-none focus:border-brandYellow">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted mb-1">Category</label>
+            <select id="newProdCategory"
+              class="w-full bg-brandDark border border-brandSilver/20 rounded-lg p-2.5 text-xs text-white outline-none focus:border-brandYellow">
+              <option value="Stationery">Stationery</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted mb-1">Price (₹)</label>
+            <input type="number" step="0.01" id="newProdPrice" required placeholder="120.00"
+              class="w-full bg-brandDark border border-brandSilver/20 rounded-lg p-2.5 text-xs text-white outline-none focus:border-brandYellow">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-brandMuted mb-1">Initial Stock Qty</label>
+            <input type="number" id="newProdStock" required placeholder="50"
+              class="w-full bg-brandDark border border-brandSilver/20 rounded-lg p-2.5 text-xs text-white outline-none focus:border-brandYellow">
+          </div>
+        </div>
+
+        <div class="pt-3 flex space-x-3">
+          <button type="button" onclick="closeAddProductModal()"
+            class="w-1/2 py-2.5 bg-brandDark text-brandSilver text-xs font-semibold rounded-xl border border-brandSilver/20 hover:bg-brandSurfaceHover">
+            Cancel
+          </button>
+          <button type="submit"
+            class="w-1/2 py-2.5 bg-brandYellow text-brandDark font-bold text-xs rounded-xl hover:bg-brandYellowHover">
+            Save Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- TOAST / NOTIFICATION MODAL                                                -->
+  <!-- ========================================================================= -->
+  <div id="toastNotification"
+    class="fixed bottom-6 right-6 z-50 max-w-sm bg-brandSurface border-2 border-brandYellow text-white p-4 rounded-xl shadow-2xl flex items-center space-x-3 transition transform translate-y-20 opacity-0 pointer-events-none">
+    <div id="toastIcon"
+      class="w-9 h-9 rounded-full bg-brandYellow text-brandDark flex items-center justify-center font-bold text-base shrink-0">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div>
+      <h4 id="toastTitle" class="font-bold text-sm text-white">Notification</h4>
+      <p id="toastMessage" class="text-xs text-brandSilver">Transaction completed successfully.</p>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT APPLICATION LOGIC                                             -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------------------
+    // INITIAL DATASETS & STATE
+    // -------------------------------------------------------------------------
+    let currentUser = {
+      name: 'Cashier_C001',
+      role: 'C001' // C001 = Cashier, S001 = Store Admin
+    };
+
+    let products = [
+      { id: 'P001', name: 'Spiral Notebook (200 Pgs)', category: 'Stationery', price: 60.00, stock: 45, initialStock: 50 },
+      { id: 'P002', name: 'Gel Pen Pack (10 Blue)', category: 'Stationery', price: 45.00, stock: 8, initialStock: 50 }, // Low stock
+      { id: 'P003', name: 'Scientific Calculator', category: 'Electronics', price: 850.00, stock: 15, initialStock: 20 },
+      { id: 'P004', name: 'USB-C Flash Drive 64GB', category: 'Electronics', price: 499.00, stock: 22, initialStock: 30 },
+      { id: 'P005', name: 'Campus ID Lanyard', category: 'Accessories', price: 80.00, stock: 60, initialStock: 100 },
+      { id: 'P006', name: 'A4 Artist Sketchpad', category: 'Stationery', price: 150.00, stock: 18, initialStock: 25 },
+    ];
+
+    let cart = [];
+
+    let salesTransactions = [
+      { id: 'TXN-9041', time: '10:14 AM', operator: 'Cashier_C001', itemSummary: 'Spiral Notebook x 2', total: 120.00 },
+      { id: 'TXN-9042', time: '11:05 AM', operator: 'Cashier_C001', itemSummary: 'Scientific Calculator x 1', total: 850.00 },
+      { id: 'TXN-9043', time: '11:42 AM', operator: 'Admin_S001', itemSummary: 'Campus ID Lanyard x 2', total: 160.00 },
+      { id: 'TXN-9044', time: '12:15 PM', operator: 'Cashier_C001', itemSummary: 'Gel Pen Pack x 2', total: 90.00 }
+    ];
+
+    let activeCategory = 'All';
+
+    // -------------------------------------------------------------------------
+    // VIEW SWITCHING ENGINE
+    // -------------------------------------------------------------------------
+    function goToView(targetViewId) {
+      const views = ['viewWelcome', 'viewLogin', 'viewDashboard'];
+      views.forEach(id => {
+        const el = document.getElementById(id);
+        if (id === targetViewId) {
+          el.classList.remove('view-hidden');
+        } else {
+          el.classList.add('view-hidden');
+        }
+      });
+
+      if (targetViewId === 'viewDashboard') {
+        renderDashboardUI();
+      }
+    }
+
+    // Toggle between Login & Register diagonal panes
+    function toggleAuthMode(isRegister) {
+      const authCard = document.getElementById('authCard');
+      if (isRegister) {
+        authCard.classList.add('active-register');
+      } else {
+        authCard.classList.remove('active-register');
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // AUTHENTICATION LOGIC
+    // -------------------------------------------------------------------------
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById('loginUsername').value.trim();
+      const selectedRole = document.querySelector('input[name="loginRole"]:checked').value;
+
+      currentUser.name = usernameInput || 'Operator';
+      currentUser.role = selectedRole;
+
+      showToast('Logged In', `Welcome back, ${currentUser.name}!`);
+      goToView('viewDashboard');
+    }
+
+    function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById('regUsername').value.trim();
+      const selectedRole = document.getElementById('regRole').value;
+
+      currentUser.name = usernameInput || 'NewOperator';
+      currentUser.role = selectedRole;
+
+      showToast('Account Created', `Registered as ${currentUser.name} (${currentUser.role})`);
+      goToView('viewDashboard');
+    }
+
+    function toggleActiveRole() {
+      currentUser.role = (currentUser.role === 'C001') ? 'S001' : 'C001';
+      renderDashboardUI();
+      showToast('Role Switched', `Active role is now ${currentUser.role === 'C001' ? 'Cashier (C001)' : 'Store Admin (S001)'}`);
+    }
+
+    // -------------------------------------------------------------------------
+    // DASHBOARD & CATALOG RENDERING
+    // -------------------------------------------------------------------------
+    function renderDashboardUI() {
+      // Update User Info in Header
+      document.getElementById('displayUsername').innerText = currentUser.name;
+      document.getElementById('userAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
+
+      const badge = document.getElementById('navRoleBadge');
+      const btnAddProd = document.getElementById('btnAddProductModal');
+
+      if (currentUser.role === 'S001') {
+        badge.innerText = 'S001 (Store Admin)';
+        badge.className = 'font-bold text-brandDark bg-brandYellow px-2 py-0.5 rounded';
+        btnAddProd.classList.remove('hidden');
+      } else {
+        badge.innerText = 'C001 (Cashier)';
+        badge.className = 'font-bold text-brandYellow bg-brandYellow/10 px-2 py-0.5 rounded';
+        btnAddProd.classList.add('hidden');
+      }
+
+      updateKPIs();
+      renderCatalog();
+      renderInventoryTable();
+      renderSalesHistoryTable();
+      renderCart();
+    }
+
+    function updateKPIs() {
+      document.getElementById('kpiTotalProducts').innerText = products.length;
+
+      const lowStockCount = products.filter(p => p.stock <= 10).length;
+      document.getElementById('kpiLowStock').innerText = lowStockCount;
+
+      const totalRevenue = salesTransactions.reduce((acc, t) => acc + t.total, 0);
+      document.getElementById('kpiRevenue').innerText = `₹${totalRevenue.toFixed(2)}`;
+
+      document.getElementById('kpiTransactions').innerText = salesTransactions.length;
+    }
+
+    // Catalog Grid
+    function renderCatalog() {
+      const pane = document.getElementById('paneCatalog');
+      const query = document.getElementById('searchInput').value.toLowerCase();
+
+      const filtered = products.filter(p => {
+        const matchesCat = (activeCategory === 'All') || (p.category === activeCategory);
+        const matchesQuery = p.name.toLowerCase().includes(query) || p.id.toLowerCase().includes(query);
+        return matchesCat && matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        pane.innerHTML = `
+          <div class="col-span-2 bg-brandSurface border border-brandSilver/10 rounded-xl p-8 text-center text-brandMuted">
+            <i class="fa-solid fa-magnifying-glass text-3xl mb-2 text-brandSilver/40"></i>
+            <p class="text-xs">No matching products found in catalog.</p>
+          </div>
+        `;
+        return;
+      }
+
+      pane.innerHTML = filtered.map(p => {
+        const isLowStock = p.stock <= 10;
+        const isOutOfStock = p.stock === 0;
+
+        return `
+          <div class="bg-brandSurface border border-brandSilver/15 hover:border-brandYellow rounded-xl p-4 flex flex-col justify-between transition duration-200 group">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-[10px] font-mono text-brandMuted bg-brandDark px-2 py-0.5 rounded border border-brandSilver/10">${p.id}</span>
+                <span class="text-[11px] font-semibold ${isOutOfStock ? 'text-rose-400 bg-rose-500/10' : isLowStock ? 'text-amber-400 bg-amber-400/10' : 'text-emerald-400 bg-emerald-400/10'} px-2 py-0.5 rounded-full">
+                  ${isOutOfStock ? 'Out of Stock' : `${p.stock} units left`}
+                </span>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1 group-hover:text-brandYellow transition">${p.name}</h4>
+              <span class="text-xs text-brandMuted block mb-3">${p.category}</span>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-brandSilver/10">
+              <span class="text-lg font-extrabold font-mono text-brandYellow">₹${p.price.toFixed(2)}</span>
+              <button onclick="addToCart('${p.id}')" ${isOutOfStock ? 'disabled' : ''} class="px-3 py-1.5 bg-brandYellow hover:bg-brandYellowHover disabled:opacity-30 disabled:hover:bg-brandYellow text-brandDark font-bold text-xs rounded-lg transition flex items-center space-x-1 shadow">
+                <i class="fa-solid fa-cart-plus"></i>
+                <span>Add</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterCategory(catName) {
+      activeCategory = catName;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.innerText.trim() === catName) {
+          btn.className = 'cat-pill px-3 py-1.5 rounded-lg bg-brandYellow text-brandDark font-bold whitespace-nowrap';
+        } else {
+          btn.className = 'cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap';
+        }
+      });
+      renderCatalog();
+    }
+
+    function switchDashboardTab(tab) {
+      const paneCatalog = document.getElementById('paneCatalog');
+      const paneInventory = document.getElementById('paneInventory');
+      const paneHistory = document.getElementById('paneHistory');
+      const filterBar = document.getElementById('catalogFilterBar');
+
+      const btnCat = document.getElementById('tabCatalog');
+      const btnInv = document.getElementById('tabInventory');
+      const btnHis = document.getElementById('tabHistory');
+
+      // Reset buttons
+      [btnCat, btnInv, btnHis].forEach(b => {
+        b.className = 'px-4 py-2 rounded-lg text-brandSilver hover:text-white transition';
+      });
+
+      if (tab === 'catalog') {
+        paneCatalog.classList.remove('hidden');
+        paneInventory.classList.add('hidden');
+        paneHistory.classList.add('hidden');
+        filterBar.classList.remove('hidden');
+        btnCat.className = 'px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition';
+      } else if (tab === 'inventory') {
+        paneCatalog.classList.add('hidden');
+        paneInventory.classList.remove('hidden');
+        paneHistory.classList.add('hidden');
+        filterBar.classList.add('hidden');
+        btnInv.className = 'px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition';
+        renderInventoryTable();
+      } else if (tab === 'history') {
+        paneCatalog.classList.add('hidden');
+        paneInventory.classList.add('hidden');
+        paneHistory.classList.remove('hidden');
+        filterBar.classList.add('hidden');
+        btnHis.className = 'px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition';
+        renderSalesHistoryTable();
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // INVENTORY MANAGER TABLE LOGIC
+    // -------------------------------------------------------------------------
+    function renderInventoryTable() {
+      const tbody = document.getElementById('inventoryTableBody');
+      tbody.innerHTML = products.map(p => `
+        <tr class="hover:bg-brandDark/40 transition">
+          <td class="p-3 font-mono text-brandYellow">${p.id}</td>
+          <td class="p-3 font-semibold text-white">${p.name}</td>
+          <td class="p-3 text-brandMuted">${p.category}</td>
+          <td class="p-3 font-mono">₹${p.price.toFixed(2)}</td>
+          <td class="p-3">
+            <span class="font-bold ${p.stock <= 10 ? 'text-amber-400' : 'text-emerald-400'}">
+              ${p.stock} units
+            </span>
+          </td>
+          <td class="p-3 text-right">
+            <button onclick="restockItem('${p.id}', 10)" class="bg-brandDark hover:bg-brandSurfaceHover text-brandYellow border border-brandYellow/30 px-2.5 py-1 rounded-md text-[11px] font-bold transition">
+              +10 Restock
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function restockItem(id, amount) {
+      const prod = products.find(p => p.id === id);
+      if (prod) {
+        prod.stock += amount;
+        renderDashboardUI();
+        showToast('Inventory Updated', `Restocked +${amount} units for ${prod.name}`);
+      }
+    }
+
+    // Add Product Modal
+    function openAddProductModal() {
+      document.getElementById('modalAddProduct').classList.remove('hidden');
+    }
+    function closeAddProductModal() {
+      document.getElementById('modalAddProduct').classList.add('hidden');
+    }
+
+    function handleCreateProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('newProdName').value;
+      const sku = document.getElementById('newProdSKU').value.toUpperCase();
+      const category = document.getElementById('newProdCategory').value;
+      const price = parseFloat(document.getElementById('newProdPrice').value);
+      const stock = parseInt(document.getElementById('newProdStock').value);
+
+      products.push({
+        id: sku,
+        name: name,
+        category: category,
+        price: price,
+        stock: stock,
+        initialStock: stock
+      });
+
+      closeAddProductModal();
+      renderDashboardUI();
+      showToast('Product Created', `${name} (${sku}) added to store catalog.`);
+    }
+
+    // Sales History Table
+    function renderSalesHistoryTable() {
+      const tbody = document.getElementById('historyTableBody');
+      tbody.innerHTML = salesTransactions.map(t => `
+        <tr class="hover:bg-brandDark/40 transition">
+          <td class="p-3 font-mono text-brandYellow">${t.id}</td>
+          <td class="p-3 text-brandMuted">${t.time}</td>
+          <td class="p-3 font-semibold text-white">${t.operator}</td>
+          <td class="p-3 text-brandSilver">${t.itemSummary}</td>
+          <td class="p-3 font-mono font-bold text-right text-brandYellow">₹${t.total.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // -------------------------------------------------------------------------
+    // CHECKOUT CART TERMINAL LOGIC
+    // -------------------------------------------------------------------------
+    function addToCart(productId) {
+      const item = products.find(p => p.id === productId);
+      if (!item || item.stock === 0) return;
+
+      const cartItem = cart.find(c => c.id === productId);
+      if (cartItem) {
+        if (cartItem.qty < item.stock) {
+          cartItem.qty += 1;
+        } else {
+          showToast('Stock Limit Reached', `Only ${item.stock} units available in stock.`, true);
+          return;
+        }
+      } else {
+        cart.push({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: 1
+        });
+      }
+
+      renderCart();
+    }
+
+    function updateCartQty(productId, delta) {
+      const cartItem = cart.find(c => c.id === productId);
+      const prod = products.find(p => p.id === productId);
+
+      if (cartItem && prod) {
+        if (delta > 0 && cartItem.qty >= prod.stock) {
+          showToast('Stock Limit', `Maximum available stock reached for ${prod.name}`, true);
+          return;
+        }
+        cartItem.qty += delta;
+        if (cartItem.qty <= 0) {
+          cart = cart.filter(c => c.id !== productId);
+        }
+      }
+      renderCart();
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(c => c.id !== productId);
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const btnCheckout = document.getElementById('btnCheckout');
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center p-6 text-brandMuted">
+            <i class="fa-solid fa-basket-shopping text-3xl mb-2 text-brandSilver/30"></i>
+            <p class="text-xs">Terminal cart is empty.<br>Select items from catalog to start checkout.</p>
+          </div>
+        `;
+        document.getElementById('cartSubtotal').innerText = '₹0.00';
+        document.getElementById('cartGrandTotal').innerText = '₹0.00';
+        btnCheckout.disabled = true;
+        return;
+      }
+
+      btnCheckout.disabled = false;
+
+      let subtotal = 0;
+      container.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.qty;
+        subtotal += itemTotal;
+
+        return `
+          <div class="bg-brandDark p-3 rounded-xl border border-brandSilver/10 flex items-center justify-between">
+            <div class="space-y-0.5">
+              <h5 class="text-xs font-bold text-white">${item.name}</h5>
+              <div class="text-[11px] font-mono text-brandYellow">₹${item.price.toFixed(2)} ea</div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <!-- Qty Steppers -->
+              <div class="flex items-center space-x-1 bg-brandSurface px-2 py-1 rounded-lg border border-brandSilver/10 text-xs">
+                <button onclick="updateCartQty('${item.id}', -1)" class="text-brandSilver hover:text-white px-1 font-bold">-</button>
+                <span class="font-mono text-white font-bold px-1">${item.qty}</span>
+                <button onclick="updateCartQty('${item.id}', 1)" class="text-brandSilver hover:text-white px-1 font-bold">+</button>
+              </div>
+
+              <!-- Item Total -->
+              <span class="text-xs font-mono font-bold text-white min-w-[50px] text-right">₹${itemTotal.toFixed(2)}</span>
+
+              <!-- Remove -->
+              <button onclick="removeFromCart('${item.id}')" class="text-brandMuted hover:text-rose-400 text-xs p-1">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('cartSubtotal').innerText = `₹${subtotal.toFixed(2)}`;
+      document.getElementById('cartGrandTotal').innerText = `₹${subtotal.toFixed(2)}`;
+    }
+
+    // Process Final Checkout Atomic Transaction
+    function processCheckout() {
+      if (cart.length === 0) return;
+
+      // Decrement Inventory Stock
+      let itemSummaries = [];
+      let grandTotal = 0;
+
+      cart.forEach(c => {
+        const prod = products.find(p => p.id === c.id);
+        if (prod) {
+          prod.stock = Math.max(0, prod.stock - c.qty);
+        }
+        itemSummaries.push(`${c.name} x ${c.qty}`);
+        grandTotal += c.price * c.qty;
+      });
+
+      // Record Sales Transaction
+      const newTxnId = `TXN-${Math.floor(1000 + Math.random() * 9000)}`;
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      salesTransactions.unshift({
+        id: newTxnId,
+        time: timeStr,
+        operator: currentUser.name,
+        itemSummary: itemSummaries.join(', '),
+        total: grandTotal
+      });
+
+      // Reset Cart
+      cart = [];
+      renderDashboardUI();
+      showToast('Checkout Completed', `Receipt ${newTxnId} committed! Total: ₹${grandTotal.toFixed(2)}`);
+    }
+
+    // -------------------------------------------------------------------------
+    // UTILITY & TOAST SYSTEM
+    // -------------------------------------------------------------------------
+    function showToast(title, message, isWarning = false) {
+      const toast = document.getElementById('toastNotification');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastTitle.innerText = title;
+      toastMessage.innerText = message;
+
+      if (isWarning) {
+        toast.className = 'fixed bottom-6 right-6 z-50 max-w-sm bg-brandSurface border-2 border-amber-400 text-white p-4 rounded-xl shadow-2xl flex items-center space-x-3 transition transform translate-y-0 opacity-100';
+        toastIcon.className = 'w-9 h-9 rounded-full bg-amber-400 text-brandDark flex items-center justify-center font-bold text-base shrink-0';
+        toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+      } else {
+        toast.className = 'fixed bottom-6 right-6 z-50 max-w-sm bg-brandSurface border-2 border-brandYellow text-white p-4 rounded-xl shadow-2xl flex items-center space-x-3 transition transform translate-y-0 opacity-100';
+        toastIcon.className = 'w-9 h-9 rounded-full bg-brandYellow text-brandDark flex items-center justify-center font-bold text-base shrink-0';
+        toastIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+      }
+
+      setTimeout(() => {
+        toast.className = 'fixed bottom-6 right-6 z-50 max-w-sm bg-brandSurface border-2 border-brandYellow text-white p-4 rounded-xl shadow-2xl flex items-center space-x-3 transition transform translate-y-20 opacity-0 pointer-events-none';
+      }, 3500);
+    }
+
+    // Clock updates
+    function startClocks() {
+      setInterval(() => {
+        const now = new Date();
+        const utc = now.toUTCString().split(' ')[4] + ' UTC';
+        const local = now.toLocaleTimeString();
+
+        const wClock = document.getElementById('welcomeUtcClock');
+        const dClock = document.getElementById('dashClock');
+
+        if (wClock) wClock.innerText = utc;
+        if (dClock) dClock.innerText = local;
+      }, 1000);
+    }
+
+    // Init on Window Load
+    window.onload = function () {
+      startClocks();
+    };
+  </script>
+</body>
+
+</html>
