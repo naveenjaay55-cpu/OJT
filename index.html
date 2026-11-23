@@ -5,15 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CAMPUS POS — Next-Gen Retail & Inventory Architecture</title>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
+
+  <!-- Font Awesome 6.4.0 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Font Inter -->
+
+  <!-- Google Font: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -27,6 +29,7 @@
             brandMuted: '#9FA3A9',
             brandYellow: '#FFC93C',
             brandYellowHover: '#FFD563',
+            panelDark: '#1E2024'
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
@@ -44,10 +47,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
+    /* Custom Scrollbar Styling */
     ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
     }
 
     ::-webkit-scrollbar-track {
@@ -63,13 +66,13 @@
       background: #FFC93C;
     }
 
-    /* Animated Glow & Pulse */
+    /* Glow & Visual Depth */
     .glow-yellow {
       box-shadow: 0 0 25px rgba(255, 201, 60, 0.25);
     }
 
     .glow-yellow-lg {
-      box-shadow: 0 0 50px rgba(255, 201, 60, 0.35);
+      box-shadow: 0 0 45px rgba(255, 201, 60, 0.35);
     }
 
     /* Diagonal Split Login Screen Animation */
@@ -158,6 +161,35 @@
       border-color: #FFC93C;
       font-weight: 700;
     }
+
+    /* Thermal Receipt Simulation font & style */
+    .font-receipt {
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* Video Carousel Animation Mechanics */
+    .hero-disc-anim {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+    }
+
+    .disc-slide-out {
+      transform: rotate(-45deg) scale(0.6) translate(-80px, 80px);
+      opacity: 0;
+    }
+
+    .disc-slide-in {
+      transform: rotate(0deg) scale(1) translate(0, 0);
+      opacity: 1;
+    }
+
+    /* Horizontal Thumbnail Scroll Snap */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 
@@ -173,14 +205,14 @@
       class="absolute inset-0 bg-[radial-gradient(#3F434A_1px,transparent_1px)] [background-size:24px_24px] opacity-30 pointer-events-none">
     </div>
 
-    <!-- Top Minimalist Status Indicator -->
-    <div class="w-full max-w-5xl flex justify-between items-center z-10 pt-4">
+    <!-- Top Minimalist Status Indicator Bar -->
+    <div class="w-full max-w-5xl flex flex-wrap justify-between items-center gap-3 z-10 pt-4">
       <div
-        class="flex items-center space-x-2 text-xs font-mono text-brandMuted border border-brandSurface px-3 py-1.5 rounded-full bg-brandDark/80">
+        class="flex items-center space-x-2 text-xs font-mono text-brandMuted border border-brandSurface px-3.5 py-1.5 rounded-full bg-brandDark/80 backdrop-blur-md">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>SYSTEM ONLINE</span>
+        <span class="font-bold text-emerald-400">SYSTEM ONLINE</span>
         <span class="text-brandSurfaceHover">|</span>
-        <span id="welcomeUtcClock">--:--:-- UTC</span>
+        <span id="welcomeUtcClock" class="text-brandSilver">--:--:-- UTC</span>
       </div>
       <div
         class="text-xs font-mono text-brandMuted border border-brandSurface px-3 py-1.5 rounded-full bg-brandDark/80">
@@ -189,55 +221,53 @@
     </div>
 
     <!-- Center Hero Entrance Block -->
-    <div class="my-auto text-center flex flex-col items-center z-10 max-w-2xl px-4">
-      <!-- Geometric Custom Store Logo SVG -->
-      <div class="relative mb-8 group cursor-pointer" onclick="goToView('viewLogin')">
+    <div class="my-auto text-center flex flex-col items-center z-10 max-w-2xl px-4 py-8">
+      <!-- Geometric Microchip + Shopping Bag SVG Logo Card -->
+      <div class="relative mb-8 group cursor-pointer" onclick="goToView('viewLogin'); playAudio('click');">
         <div
-          class="absolute -inset-2 rounded-2xl bg-brandYellow/20 blur-xl group-hover:bg-brandYellow/40 transition duration-500">
+          class="absolute -inset-3 rounded-2xl bg-brandYellow/20 blur-xl group-hover:bg-brandYellow/40 transition duration-500">
         </div>
         <div
           class="relative bg-brandSurface border-2 border-brandYellow p-6 rounded-2xl glow-yellow transition transform group-hover:scale-105 duration-300">
           <svg class="w-20 h-20 text-brandYellow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Outer Sequential Microchip Pins -->
+            <!-- Microchip Pins -->
             <path
               d="M20 35H10M20 50H10M20 65H10M80 35H90M80 50H90M80 65H90M35 20V10M50 20V10M65 20V10M35 80V90M50 80V90M65 80V90"
               stroke="#D9DADC" stroke-width="4" stroke-linecap="round" />
             <!-- Chip Main Body -->
             <rect x="20" y="20" width="60" height="60" rx="10" fill="#2B2D31" stroke="#FFC93C" stroke-width="4" />
             <!-- Inner Micro Circuit Lines -->
-            <rect x="30" y="30" width="40" height="40" rx="6" stroke="#D9DADC" stroke-width="2"
-              stroke-dasharray="4 2" />
+            <rect x="30" y="30" width="40" height="40" rx="6" stroke="#D9DADC" stroke-width="2" stroke-dasharray="4 2" />
             <!-- Integrated Retail Shopping Bag Emblem -->
             <path d="M40 45C40 39.4772 44.4772 35 50 35C55.5228 35 60 39.4772 60 45V48H40V45Z" stroke="#FFC93C"
               stroke-width="3.5" stroke-linecap="round" />
-            <path d="M36 48H64L67 72H33L36 48Z" fill="#FFC93C" stroke="#FFC93C" stroke-width="2"
-              stroke-linejoin="round" />
+            <path d="M36 48H64L67 72H33L36 48Z" fill="#FFC93C" stroke="#FFC93C" stroke-width="2" stroke-linejoin="round" />
             <circle cx="45" cy="54" r="1.5" fill="#2B2D31" />
             <circle cx="55" cy="54" r="1.5" fill="#2B2D31" />
           </svg>
         </div>
       </div>
 
-      <!-- Store Title -->
-      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-3">
+      <!-- Main Title -->
+      <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight mb-3">
         <span class="text-brandSilver">CAMPUS</span>
         <span class="text-brandYellow">POS</span>
       </h1>
 
-      <p class="text-brandMuted text-base md:text-lg mb-8 max-w-md font-medium">
+      <p class="text-brandMuted text-base sm:text-lg mb-8 max-w-lg font-medium leading-relaxed">
         Deterministic sequential checkout engine & high-throughput inventory control center.
       </p>
 
-      <!-- Entrance Action Button -->
-      <button onclick="goToView('viewLogin')"
-        class="group relative px-8 py-4 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-extrabold text-lg rounded-xl shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-3 glow-yellow">
+      <!-- Entrance CTA Button -->
+      <button onclick="goToView('viewLogin'); playAudio('click');"
+        class="group relative px-9 py-4 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-extrabold text-lg rounded-xl shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-3 glow-yellow cursor-pointer">
         <span>ENTER STORE</span>
-        <i class="fa-solid font-bold fa-arrow-right group-hover:translate-x-1.5 transition-transform duration-200"></i>
+        <i class="fa-solid fa-arrow-right group-hover:translate-x-1.5 transition-transform duration-200"></i>
       </button>
     </div>
 
-    <!-- Bottom Footer -->
-    <div class="z-10 pb-4 text-xs text-brandMuted font-mono">
+    <!-- Bottom Footer Note -->
+    <div class="z-10 pb-4 text-xs text-brandMuted font-mono text-center">
       Designed for high-density campus retail operations • Secure & atomic state lock
     </div>
   </section>
@@ -249,36 +279,33 @@
   <section id="viewLogin"
     class="view-section view-hidden min-h-screen w-full flex items-center justify-center p-4 relative">
 
-    <!-- Top Return to Welcome Button -->
-    <button onclick="goToView('viewWelcome')"
-      class="absolute top-6 left-6 text-sm font-semibold text-brandSilver hover:text-brandYellow flex items-center space-x-2 bg-brandSurface px-4 py-2 rounded-lg border border-brandSilver/10 transition duration-200 z-50">
+    <!-- Top Return Button -->
+    <button onclick="goToView('viewWelcome'); playAudio('click');"
+      class="absolute top-6 left-6 text-xs sm:text-sm font-semibold text-brandSilver hover:text-brandYellow flex items-center space-x-2 bg-brandSurface px-4 py-2 rounded-lg border border-brandSilver/10 transition duration-200 z-50 cursor-pointer">
       <i class="fa-solid fa-arrow-left"></i>
       <span>Back to Entrance</span>
     </button>
 
     <!-- Main Auth Container Card -->
     <div id="authCard"
-      class="auth-card relative w-full max-w-4xl h-[560px] bg-brandSurface border-2 border-brandYellow rounded-2xl shadow-2xl overflow-hidden glow-yellow">
+      class="auth-card relative w-full max-w-4xl min-h-[560px] bg-brandSurface border-2 border-brandYellow rounded-2xl shadow-2xl overflow-hidden glow-yellow my-auto">
 
       <!-- Animated Diagonal Gradient Backdrop -->
-      <div class="diagonal-bg"></div>
+      <div class="diagonal-bg hidden md:block"></div>
 
-      <!-- --------------------------------------------------------------------- -->
       <!-- LOGIN FORM PANE (Left Side) -->
-      <!-- --------------------------------------------------------------------- -->
       <div
-        class="form-pane login-pane absolute top-0 left-0 w-full md:w-1/2 h-full flex flex-col justify-center px-8 md:px-12 z-20">
+        class="form-pane login-pane absolute top-0 left-0 w-full md:w-1/2 h-full flex flex-col justify-center px-6 sm:px-10 md:px-12 z-20 py-8">
         <div class="flex items-center space-x-2 text-brandYellow text-xs font-bold tracking-wider uppercase mb-1">
           <i class="fa-solid fa-store"></i>
           <span>Campus POS Access</span>
         </div>
-        <h2 class="text-3xl font-bold text-white mb-6">Operator Sign In</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-6">Operator Sign In</h2>
 
         <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
           <!-- Operator ID / Username -->
           <div>
-            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Operator ID /
-              Username</label>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Operator ID / Username</label>
             <div class="relative">
               <input type="text" id="loginUsername" required value="Cashier_C001"
                 class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
@@ -300,8 +327,7 @@
 
           <!-- Role Selection Selector -->
           <div>
-            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1.5">Select Working
-              Role</label>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1.5">Select Working Role</label>
             <div class="grid grid-cols-2 gap-2 text-xs">
               <label class="role-pill cursor-pointer">
                 <input type="radio" name="loginRole" value="C001" checked class="hidden">
@@ -324,7 +350,7 @@
 
           <!-- Submit Button -->
           <button type="submit"
-            class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold rounded-xl shadow-lg transition duration-200 mt-2 flex items-center justify-center space-x-2">
+            class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold rounded-xl shadow-lg transition duration-200 mt-2 flex items-center justify-center space-x-2 cursor-pointer">
             <span>Login to Terminal</span>
             <i class="fa-solid fa-right-to-bracket"></i>
           </button>
@@ -333,7 +359,7 @@
           <p class="text-xs text-center text-brandSilver mt-4">
             Need a new operator account?
             <button type="button" onclick="toggleAuthMode(true)"
-              class="text-brandYellow font-bold hover:underline ml-1">
+              class="text-brandYellow font-bold hover:underline ml-1 cursor-pointer">
               Create Account
             </button>
           </p>
@@ -342,7 +368,7 @@
 
       <!-- WELCOME BACK OVERLAY (Right Side Overlay on Login) -->
       <div
-        class="welcome-panel welcome-right absolute top-0 right-0 w-full md:w-1/2 h-full flex flex-col justify-center px-10 md:px-12 z-20 text-brandDark pointer-events-none">
+        class="welcome-panel welcome-right absolute top-0 right-0 w-1/2 h-full hidden md:flex flex-col justify-center px-10 md:px-12 z-20 text-brandDark pointer-events-none">
         <h1 class="text-4xl font-extrabold tracking-tight leading-none mb-3">
           WELCOME<br>BACK!
         </h1>
@@ -351,22 +377,19 @@
         </p>
       </div>
 
-      <!-- --------------------------------------------------------------------- -->
       <!-- REGISTER FORM PANE (Right Side) -->
-      <!-- --------------------------------------------------------------------- -->
       <div
-        class="form-pane register-pane absolute top-0 right-0 w-full md:w-1/2 h-full flex flex-col justify-center px-8 md:px-12 z-20">
-        <div class="flex items-center space-x-2 text-brandDark text-xs font-bold tracking-wider uppercase mb-1">
+        class="form-pane register-pane absolute top-0 right-0 w-full md:w-1/2 h-full flex flex-col justify-center px-6 sm:px-10 md:px-12 z-20 py-8">
+        <div class="flex items-center space-x-2 text-brandDark md:text-brandYellow text-xs font-bold tracking-wider uppercase mb-1">
           <i class="fa-solid fa-user-plus"></i>
           <span>New Operator Registration</span>
         </div>
-        <h2 class="text-3xl font-bold text-white mb-6">Create Account</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-6">Create Account</h2>
 
         <form onsubmit="handleRegisterSubmit(event)" class="space-y-4">
           <!-- Username -->
           <div>
-            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Operator Name /
-              Handle</label>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Operator Handle</label>
             <div class="relative">
               <input type="text" id="regUsername" required
                 class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
@@ -377,8 +400,7 @@
 
           <!-- Email -->
           <div>
-            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Campus
-              Email</label>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Campus Email</label>
             <div class="relative">
               <input type="email" id="regEmail" required
                 class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 pl-9 rounded-t-md outline-none transition"
@@ -400,8 +422,7 @@
 
           <!-- Role Selection -->
           <div>
-            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Assigned
-              Role</label>
+            <label class="block text-xs font-semibold text-brandMuted uppercase tracking-wider mb-1">Assigned Role</label>
             <select id="regRole"
               class="w-full bg-brandDark/80 border-b-2 border-brandSilver/40 focus:border-brandYellow text-white text-sm py-2.5 px-3 rounded-t-md outline-none transition">
               <option value="C001">Cashier Terminal (C001)</option>
@@ -411,7 +432,7 @@
 
           <!-- Submit Button -->
           <button type="submit"
-            class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold rounded-xl shadow-lg transition duration-200 mt-2 flex items-center justify-center space-x-2">
+            class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold rounded-xl shadow-lg transition duration-200 mt-2 flex items-center justify-center space-x-2 cursor-pointer">
             <span>Register & Enter</span>
             <i class="fa-solid fa-user-check"></i>
           </button>
@@ -420,7 +441,7 @@
           <p class="text-xs text-center text-brandSilver mt-4">
             Already registered?
             <button type="button" onclick="toggleAuthMode(false)"
-              class="text-brandYellow font-bold hover:underline ml-1">
+              class="text-brandYellow font-bold hover:underline ml-1 cursor-pointer">
               Sign In
             </button>
           </p>
@@ -429,7 +450,7 @@
 
       <!-- WELCOME OVERLAY (Left Side Overlay on Register) -->
       <div
-        class="welcome-panel welcome-left absolute top-0 left-0 w-full md:w-1/2 h-full flex flex-col justify-center px-10 md:px-12 z-20 text-brandDark pointer-events-none">
+        class="welcome-panel welcome-left absolute top-0 left-0 w-1/2 h-full hidden md:flex flex-col justify-center px-10 md:px-12 z-20 text-brandDark pointer-events-none">
         <h1 class="text-4xl font-extrabold tracking-tight leading-none mb-3">
           JOIN THE<br>TEAM!
         </h1>
@@ -443,323 +464,468 @@
 
 
   <!-- ========================================================================= -->
-  <!-- VIEW 3: REDESIGNED INNER MAIN APPLICATION (MODERN POS & INVENTORY HUB)   -->
+  <!-- VIEW 3: REDESIGNED INNER APPLICATION (VIDEO MENU SCROLL CAROUSEL LAYOUT)  -->
   <!-- ========================================================================= -->
-  <section id="viewDashboard" class="view-section view-hidden min-h-screen w-full flex flex-col">
+  <section id="viewDashboard" class="view-section view-hidden min-h-screen w-full flex flex-col bg-brandDark">
 
-    <!-- TOP NAVIGATION BAR -->
-    <header
-      class="bg-brandSurface border-b border-brandSilver/10 px-6 py-3 sticky top-0 z-40 flex items-center justify-between shadow-lg">
+    <!-- TOP MINIMALIST HEADER BAR (MATCHING VIDEO HEADER) -->
+    <header class="bg-brandDark/90 backdrop-blur-md border-b border-brandSilver/10 px-4 sm:px-8 py-3.5 sticky top-0 z-40 flex items-center justify-between">
+      
+      <!-- Left Header: Brand Logo, Role Switcher & Mode Navigation Pills -->
       <div class="flex items-center space-x-4">
-        <!-- Compact Logo Icon -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="goToView('viewWelcome')">
-          <div class="bg-brandDark p-2 rounded-lg border border-brandYellow text-brandYellow">
-            <svg class="w-6 h-6" viewBox="0 0 100 100" fill="none">
+        <!-- Logo -->
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="goToView('viewWelcome'); playAudio('click');">
+          <div class="bg-brandSurface p-2 rounded-xl border border-brandYellow/40 text-brandYellow shadow-md">
+            <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none">
               <rect x="20" y="20" width="60" height="60" rx="10" stroke="#FFC93C" stroke-width="8" />
-              <path d="M40 45C40 39.4 44.4 35 50 35C55.5 35 60 39.4 60 45V48H40V45Z" stroke="#FFC93C"
-                stroke-width="6" />
+              <path d="M40 45C40 39.4 44.4 35 50 35C55.5 35 60 39.4 60 45V48H40V45Z" stroke="#FFC93C" stroke-width="6" />
               <path d="M36 48H64L67 72H33L36 48Z" fill="#FFC93C" />
             </svg>
           </div>
           <div>
-            <h2 class="font-extrabold text-base tracking-tight leading-none text-white">
+            <h2 class="font-black text-sm tracking-tight leading-none text-white">
               CAMPUS<span class="text-brandYellow">POS</span>
             </h2>
-            <span class="text-[10px] font-mono text-brandMuted">SEQUENTIAL TERMINAL</span>
+            <span class="text-[9px] font-mono text-brandMuted tracking-wider">STORE ENGINE</span>
           </div>
         </div>
 
         <span class="text-brandSilver/20 hidden sm:inline">|</span>
 
         <!-- Active Role Badge & Switcher -->
-        <div
-          class="hidden sm:flex items-center space-x-2 bg-brandDark px-3 py-1.5 rounded-lg border border-brandSilver/10 text-xs">
-          <span class="text-brandMuted">Active Role:</span>
-          <span id="navRoleBadge" class="font-bold text-brandYellow px-2 py-0.5 bg-brandYellow/10 rounded">
+        <div class="hidden md:flex items-center space-x-2 bg-panelDark px-3 py-1.5 rounded-xl border border-brandSilver/10 text-xs">
+          <span id="navRoleBadge" class="font-bold text-brandYellow px-2 py-0.5 bg-brandYellow/10 rounded-md">
             C001 (Cashier)
           </span>
           <button onclick="toggleActiveRole()" title="Quick Switch Role"
-            class="ml-1 text-brandSilver hover:text-brandYellow text-xs px-1">
+            class="ml-1 text-brandSilver hover:text-brandYellow text-xs px-1 cursor-pointer transition">
             <i class="fa-solid fa-arrows-rotate"></i>
           </button>
         </div>
+
+        <!-- Mode Pills -->
+        <div class="flex bg-panelDark p-1 rounded-xl border border-brandSilver/10 text-xs font-semibold">
+          <button id="navTabCarousel" onclick="switchMainStageMode('carousel')"
+            class="px-3.5 py-1.5 rounded-lg text-brandDark bg-brandYellow font-bold transition cursor-pointer whitespace-nowrap">
+            <i class="fa-solid fa-sliders mr-1.5"></i> POS Carousel
+          </button>
+          <button id="navTabInventory" onclick="switchMainStageMode('inventory')"
+            class="px-3.5 py-1.5 rounded-lg text-brandSilver hover:text-white transition cursor-pointer whitespace-nowrap">
+            <i class="fa-solid fa-list-check mr-1.5"></i> Inventory
+          </button>
+          <button id="navTabHistory" onclick="switchMainStageMode('history')"
+            class="px-3.5 py-1.5 rounded-lg text-brandSilver hover:text-white transition cursor-pointer whitespace-nowrap">
+            <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Sales History
+          </button>
+        </div>
+
+        <!-- Add Product Button (S001 Only) -->
+        <button id="btnAddProductModal" onclick="openAddProductModal()"
+          class="hidden bg-brandYellow/10 hover:bg-brandYellow/20 text-brandYellow border border-brandYellow/40 font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Product</span>
+        </button>
       </div>
 
-      <!-- Right Header Tools -->
-      <div class="flex items-center space-x-4">
-        <!-- Live Clock -->
-        <div
-          class="hidden md:flex items-center space-x-2 text-xs font-mono text-brandSilver bg-brandDark/60 px-3 py-1.5 rounded-lg border border-brandSilver/10">
+      <!-- Right Header: Compact Search Bar, Audio Toggle, Live Clock & User Controls -->
+      <div class="flex items-center space-x-3">
+        <!-- Expandable Search Input -->
+        <div class="relative group">
+          <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Search SKU or item..."
+            class="w-32 sm:w-48 focus:w-64 bg-panelDark border border-brandSilver/20 focus:border-brandYellow text-white text-xs py-1.5 px-3 pl-8 rounded-full outline-none transition-all duration-300">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2 text-brandMuted text-xs"></i>
+        </div>
+
+        <!-- Audio Mute/Unmute Toggle -->
+        <button onclick="toggleAudio()" title="Sound Effects Toggle"
+          class="bg-panelDark text-brandSilver hover:text-brandYellow p-2 rounded-xl border border-brandSilver/10 text-xs font-semibold cursor-pointer transition">
+          <i class="fa-solid fa-volume-high text-brandYellow" id="audioIcon"></i>
+        </button>
+
+        <!-- Live Local Clock -->
+        <div class="hidden lg:flex items-center space-x-2 text-xs font-mono text-brandSilver bg-panelDark px-3 py-1.5 rounded-xl border border-brandSilver/10">
           <i class="fa-regular fa-clock text-brandYellow"></i>
           <span id="dashClock">00:00:00</span>
         </div>
 
         <!-- Operator User Menu -->
-        <div class="flex items-center space-x-3 bg-brandDark px-3 py-1.5 rounded-xl border border-brandSilver/10">
-          <div
-            class="w-7 h-7 rounded-full bg-brandYellow text-brandDark font-bold flex items-center justify-center text-xs">
+        <div class="flex items-center space-x-2 bg-panelDark px-3 py-1.5 rounded-xl border border-brandSilver/10">
+          <div class="w-6 h-6 rounded-full bg-brandYellow text-brandDark font-bold flex items-center justify-center text-xs">
             <span id="userAvatar">C</span>
           </div>
-          <span id="displayUsername" class="text-xs font-semibold text-white">Cashier_C001</span>
+          <span id="displayUsername" class="text-xs font-semibold text-white hidden sm:inline">Cashier_C001</span>
         </div>
 
-        <!-- Logout Button -->
-        <button onclick="goToView('viewWelcome')"
-          class="bg-brandDark hover:bg-rose-500/20 text-brandSilver hover:text-rose-400 p-2 rounded-lg border border-brandSilver/10 transition text-xs font-semibold flex items-center space-x-1.5"
+        <!-- Exit Button -->
+        <button onclick="goToView('viewWelcome'); playAudio('click');"
+          class="bg-panelDark hover:bg-rose-500/20 text-brandSilver hover:text-rose-400 p-2 rounded-xl border border-brandSilver/10 transition text-xs font-semibold flex items-center space-x-1 cursor-pointer"
           title="Exit to Entrance">
           <i class="fa-solid fa-power-off text-rose-400"></i>
-          <span class="hidden md:inline">Exit</span>
         </button>
       </div>
     </header>
 
-    <!-- MAIN DASHBOARD CONTENT AREA -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col space-y-6">
+    <!-- MAIN DASHBOARD CONTENT (VIDEO SPLIT CANVAS & FLOATING CARD) -->
+    <main class="flex-1 w-full flex flex-col lg:flex-row p-4 sm:p-6 gap-6 relative overflow-hidden">
 
-      <!-- KPI METRIC STRIP -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <!-- Metric 1: Catalog Products -->
-        <div
-          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
-          <div class="space-y-1">
-            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Active SKUs</span>
-            <span id="kpiTotalProducts" class="text-2xl font-bold text-white">6</span>
+      <!-- LEFT / CENTER AREA: CAROUSEL STAGE OR SWITCHABLE TABLES -->
+      <div class="flex-1 flex flex-col relative overflow-hidden rounded-3xl bg-brandDark">
+
+        <!-- =================================================================== -->
+        <!-- MODE 1: HERO MENU SCROLL CAROUSEL STAGE (VIDEO MATCHING LAYOUT)    -->
+        <!-- =================================================================== -->
+        <div id="stageCarousel" class="flex-1 flex flex-col justify-between relative overflow-hidden rounded-3xl p-4 sm:p-8 min-h-[580px]">
+          
+          <!-- DYNAMIC BACKGROUND SWEEPING ARCHED SVG RIBBON -->
+          <svg id="bgRibbonSvg" class="absolute inset-0 w-full h-full pointer-events-none transition-all duration-700" viewBox="0 0 1000 600" preserveAspectRatio="none">
+            <path id="bgRibbonPath" d="M -100,500 C 200,550 450,200 1100,50 L 1100,-100 L -100,-100 Z" fill="url(#ribbonGradient)" opacity="0.35" />
+            <defs>
+              <linearGradient id="ribbonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop id="gradStop1" offset="0%" stop-color="#FFC93C" stop-opacity="0.8" />
+                <stop id="gradStop2" offset="100%" stop-color="#2B2D31" stop-opacity="0.1" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <!-- FAR-LEFT EDGE VERTICAL PAGINATION DOTS (MATCHING VIDEO LEFT EDGE) -->
+          <div id="verticalDotsContainer" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 flex flex-col space-y-3 z-30">
+            <!-- Dynamic vertical dots generated by JS -->
           </div>
-          <div
-            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-brandYellow text-lg border border-brandSilver/10">
-            <i class="fa-solid fa-boxes-stacked"></i>
+
+          <!-- TOP-RIGHT PEEK OF NEXT PRODUCT ALONG THE RIBBON CURVE (VIDEO PEEK) -->
+          <div id="carouselPeekDisc" onclick="nextProduct()" class="absolute top-4 right-8 z-20 cursor-pointer hidden sm:flex items-center space-x-3 bg-panelDark/70 backdrop-blur-md p-2.5 rounded-2xl border border-brandSilver/15 hover:border-brandYellow transition duration-300 transform hover:scale-105 shadow-xl">
+            <div class="w-12 h-12 rounded-full bg-brandSurface flex items-center justify-center p-2 border border-brandSilver/20 overflow-hidden shadow-inner">
+              <div id="peekSvgContainer"></div>
+            </div>
+            <div class="pr-2">
+              <span class="text-[9px] font-mono text-brandYellow block uppercase tracking-wider">Up Next</span>
+              <span id="peekProductName" class="text-xs font-bold text-white block max-w-[100px] truncate">Gel Pen Pack</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-brandSilver/60 text-xs"></i>
+          </div>
+
+          <!-- MAIN HERO DISPLAY AREA (CENTER DISK & TWO-LINE TEXT DISPLAY) -->
+          <div class="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-start gap-8 z-20 my-auto pl-6 sm:pl-12 pr-4">
+            
+            <!-- LARGE ROTATING DISK SHOWCASE -->
+            <div class="relative group cursor-pointer" onclick="nextProduct()">
+              <div id="heroDiscGlow" class="absolute -inset-4 rounded-full bg-brandYellow/20 blur-2xl transition duration-500"></div>
+              
+              <!-- Primary Disk -->
+              <div id="heroDisc" class="hero-disc-anim disc-slide-in w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-brandSurface to-brandDark border-4 border-brandSilver/20 flex items-center justify-center p-6 shadow-2xl relative z-10 group-hover:border-brandYellow transition duration-300">
+                <div id="heroSvgArt" class="w-full h-full flex items-center justify-center transform drop-shadow-2xl">
+                  <!-- Dynamic SVG Art -->
+                </div>
+              </div>
+            </div>
+
+            <!-- HERO TEXT & DUAL ACTION BUTTONS (DIRECTLY FROM VIDEO) -->
+            <div class="flex flex-col items-center md:items-start text-center md:text-left space-y-3 max-w-md">
+              <!-- Tagline Badge -->
+              <span id="heroTagline" class="text-xs font-mono font-bold tracking-widest text-brandYellow uppercase bg-brandYellow/10 px-3 py-1 rounded-full border border-brandYellow/20">
+                #1 CAMPUS ESSENTIAL • P001
+              </span>
+
+              <!-- Large Two-Line Title -->
+              <div class="space-y-0 tracking-tight leading-none">
+                <h3 id="heroTitleTop" class="text-3xl sm:text-4xl md:text-5xl font-extralight text-brandSilver tracking-wide uppercase transition-all duration-300">
+                  SPIRAL
+                </h3>
+                <h2 id="heroTitleBottom" class="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight uppercase transition-all duration-300">
+                  NOTEBOOK
+                </h2>
+              </div>
+
+              <!-- Two Inline Action Buttons (Like "Play video" & "Order food" in video) -->
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-4">
+                <!-- Button 1: Add to Cart -->
+                <button id="btnHeroAddToCart" onclick="addCurrentHeroToCart()"
+                  class="px-6 py-3 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-black text-sm rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-2 glow-yellow cursor-pointer">
+                  <i class="fa-solid fa-cart-plus text-base"></i>
+                  <span>Add to Cart</span>
+                </button>
+
+                <!-- Button 2: Restock +10 -->
+                <button id="btnHeroRestock" onclick="restockCurrentHero()"
+                  class="px-5 py-3 bg-panelDark hover:bg-brandSurface text-brandSilver hover:text-white border border-brandSilver/20 font-bold text-sm rounded-2xl transition flex items-center space-x-2 cursor-pointer">
+                  <i class="fa-solid fa-boxes-packing text-brandYellow"></i>
+                  <span>Restock +10</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BOTTOM HORIZONTAL THUMBNAIL CAROUSEL STRIP (VIDEO CAROUSEL BOTTOM STRIP) -->
+          <div class="z-30 space-y-3 pt-4 border-t border-brandSilver/10">
+            
+            <!-- Integrated Category Filter Row -->
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center space-x-1.5 text-xs overflow-x-auto no-scrollbar">
+                <button onclick="filterCategory('All')" class="cat-pill px-3 py-1 rounded-full bg-brandYellow text-brandDark font-bold whitespace-nowrap cursor-pointer">All</button>
+                <button onclick="filterCategory('Stationery')" class="cat-pill px-3 py-1 rounded-full bg-panelDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap cursor-pointer">Stationery</button>
+                <button onclick="filterCategory('Electronics')" class="cat-pill px-3 py-1 rounded-full bg-panelDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap cursor-pointer">Electronics</button>
+                <button onclick="filterCategory('Accessories')" class="cat-pill px-3 py-1 rounded-full bg-panelDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap cursor-pointer">Accessories</button>
+              </div>
+              
+              <div class="text-[11px] font-mono text-brandMuted hidden sm:block">
+                Use <i class="fa-solid fa-arrows-left-right text-brandYellow"></i> Arrow Keys or Scroll
+              </div>
+            </div>
+
+            <!-- Horizontal Scrollable Cards with Left/Right Arrows -->
+            <div class="flex items-center space-x-2">
+              <!-- Left Arrow Button -->
+              <button onclick="prevProduct()" class="w-9 h-9 rounded-full bg-panelDark border border-brandSilver/20 text-brandSilver hover:text-brandYellow hover:border-brandYellow flex items-center justify-center shrink-0 cursor-pointer transition">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+
+              <!-- Scrollable Thumbnails Container -->
+              <div id="thumbnailRow" class="flex-1 flex items-center space-x-3 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth">
+                <!-- Dynamic Thumbnail Cards -->
+              </div>
+
+              <!-- Right Arrow Button -->
+              <button onclick="nextProduct()" class="w-9 h-9 rounded-full bg-panelDark border border-brandSilver/20 text-brandSilver hover:text-brandYellow hover:border-brandYellow flex items-center justify-center shrink-0 cursor-pointer transition">
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- MODE 2: INVENTORY MANAGER TABLE PANE                               -->
+        <!-- =================================================================== -->
+        <div id="stageInventory" class="hidden flex-1 bg-brandSurface border border-brandSilver/15 rounded-3xl p-6 overflow-hidden flex flex-col">
+          <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <div>
+              <h3 class="text-base font-bold text-white">Stock Allocation & Restock Control Center</h3>
+              <p class="text-xs text-brandMuted">Audit item availability, restock quantities, and trigger new SKU entries.</p>
+            </div>
+            <button onclick="openAddProductModal()"
+              class="text-xs bg-brandYellow text-brandDark font-bold px-4 py-2 rounded-xl hover:bg-brandYellowHover cursor-pointer shadow-lg">
+              + Add New Item
+            </button>
+          </div>
+          <div class="flex-1 overflow-x-auto border border-brandSilver/10 rounded-2xl">
+            <table class="w-full text-left text-xs text-brandSilver">
+              <thead class="bg-panelDark text-brandMuted uppercase font-mono border-b border-brandSilver/10">
+                <tr>
+                  <th class="p-3.5">SKU</th>
+                  <th class="p-3.5">Product Name</th>
+                  <th class="p-3.5">Category</th>
+                  <th class="p-3.5">Price</th>
+                  <th class="p-3.5">Current Stock</th>
+                  <th class="p-3.5 text-right">Quick Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody" class="divide-y divide-brandSilver/10 bg-brandDark/50">
+                <!-- Dynamic Inventory Rows -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Metric 2: Low Stock Alerts -->
-        <div
-          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
-          <div class="space-y-1">
-            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Low Stock Items</span>
-            <span id="kpiLowStock" class="text-2xl font-bold text-amber-400">1</span>
+        <!-- =================================================================== -->
+        <!-- MODE 3: SALES HISTORY TABLE PANE                                   -->
+        <!-- =================================================================== -->
+        <div id="stageHistory" class="hidden flex-1 bg-brandSurface border border-brandSilver/15 rounded-3xl p-6 overflow-hidden flex flex-col">
+          <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <div>
+              <h3 class="text-base font-bold text-white">Completed Checkout Receipts Audit</h3>
+              <p class="text-xs text-brandMuted">Immutable client-side atomic transactions log.</p>
+            </div>
+            <button onclick="exportSalesLogCSV()"
+              class="text-xs bg-panelDark hover:bg-brandSurfaceHover text-brandYellow border border-brandYellow/30 px-4 py-2 rounded-xl font-bold transition flex items-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-download"></i>
+              <span>Export CSV</span>
+            </button>
           </div>
-          <div
-            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-amber-400 text-lg border border-brandSilver/10">
-            <i class="fa-solid fa-triangle-exclamation"></i>
+          <div class="flex-1 overflow-x-auto border border-brandSilver/10 rounded-2xl">
+            <table class="w-full text-left text-xs text-brandSilver">
+              <thead class="bg-panelDark text-brandMuted uppercase font-mono border-b border-brandSilver/10">
+                <tr>
+                  <th class="p-3.5">Receipt ID</th>
+                  <th class="p-3.5">Timestamp</th>
+                  <th class="p-3.5">Operator</th>
+                  <th class="p-3.5">Items Purchased</th>
+                  <th class="p-3.5 text-right">Total Amount</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody" class="divide-y divide-brandSilver/10 bg-brandDark/50">
+                <!-- Dynamic Sales Rows -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Metric 3: Total Sales Revenue -->
-        <div
-          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
-          <div class="space-y-1">
-            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Total Sales</span>
-            <span id="kpiRevenue" class="text-2xl font-bold text-brandYellow">₹1,240.00</span>
-          </div>
-          <div
-            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-brandYellow text-lg border border-brandSilver/10">
-            <i class="fa-solid fa-indian-rupee-sign"></i>
-          </div>
-        </div>
-
-        <!-- Metric 4: Completed Transactions -->
-        <div
-          class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
-          <div class="space-y-1">
-            <span class="text-xs font-semibold text-brandMuted uppercase tracking-wider block">Transactions</span>
-            <span id="kpiTransactions" class="text-2xl font-bold text-white">4</span>
-          </div>
-          <div
-            class="w-10 h-10 rounded-lg bg-brandDark flex items-center justify-center text-emerald-400 text-lg border border-brandSilver/10">
-            <i class="fa-solid fa-receipt"></i>
-          </div>
-        </div>
       </div>
 
-      <!-- WORKSPACE TWO COLUMN LAYOUT -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
 
-        <!-- LEFT COLUMN: Catalog & Inventory Management (7 cols) -->
-        <div class="lg:col-span-7 flex flex-col space-y-4">
-
-          <!-- Section Controls Header & Tabs -->
-          <div class="bg-brandSurface border border-brandSilver/15 rounded-xl p-4 space-y-4">
-
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <!-- Navigation Tabs -->
-              <div class="flex bg-brandDark p-1 rounded-xl border border-brandSilver/10 text-xs font-semibold">
-                <button id="tabCatalog" onclick="switchDashboardTab('catalog')"
-                  class="px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition">
-                  <i class="fa-solid fa-border-all mr-1.5"></i> POS Catalog
-                </button>
-                <button id="tabInventory" onclick="switchDashboardTab('inventory')"
-                  class="px-4 py-2 rounded-lg text-brandSilver hover:text-white transition">
-                  <i class="fa-solid fa-list-check mr-1.5"></i> Inventory Manager
-                </button>
-                <button id="tabHistory" onclick="switchDashboardTab('history')"
-                  class="px-4 py-2 rounded-lg text-brandSilver hover:text-white transition">
-                  <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Sales History
-                </button>
-              </div>
-
-              <!-- Quick Add Product Trigger for Admins -->
-              <button id="btnAddProductModal" onclick="openAddProductModal()"
-                class="hidden bg-brandDark hover:bg-brandSurfaceHover text-brandYellow font-semibold text-xs px-3 py-2 rounded-lg border border-brandYellow/30 transition flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-plus"></i>
-                <span>Add Product</span>
-              </button>
-            </div>
-
-            <!-- Search Bar & Category Filters (Catalog Mode) -->
-            <div id="catalogFilterBar"
-              class="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-brandSilver/10">
-              <!-- Search Box -->
-              <div class="relative w-full sm:w-1/2">
-                <input type="text" id="searchInput" oninput="renderCatalog()" placeholder="Search SKU or product..."
-                  class="w-full bg-brandDark border border-brandSilver/20 focus:border-brandYellow text-white text-xs py-2 px-3 pl-8 rounded-lg outline-none transition">
-                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-brandMuted text-xs"></i>
-              </div>
-
-              <!-- Category Pills -->
-              <div class="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-1/2 pb-1 sm:pb-0 text-xs">
-                <button onclick="filterCategory('All')"
-                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandYellow text-brandDark font-bold whitespace-nowrap">All</button>
-                <button onclick="filterCategory('Stationery')"
-                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap">Stationery</button>
-                <button onclick="filterCategory('Electronics')"
-                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap">Electronics</button>
-                <button onclick="filterCategory('Accessories')"
-                  class="cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap">Accessories</button>
-              </div>
-            </div>
-
+      <!-- ======================================================================= -->
+      <!-- RIGHT-SIDE FLOATING DARK CARD (MATCHING VIDEO OVERVIEW/INGREDIENTS CARD)-->
+      <!-- ======================================================================= -->
+      <div id="rightFloatingCard"
+        class="w-full lg:w-[340px] xl:w-[370px] bg-panelDark rounded-3xl border border-brandSilver/15 p-6 shadow-2xl flex flex-col space-y-4 shrink-0">
+        
+        <!-- CARD TOP SUB-TAB PILLS (Overview | Checkout | Stats) -->
+        <div class="flex items-center justify-between border-b border-brandSilver/15 pb-3">
+          <div class="flex space-x-4 text-xs font-bold">
+            <button id="cardTabOverview" onclick="switchRightCardTab('overview')"
+              class="text-brandYellow border-b-2 border-brandYellow pb-1 transition cursor-pointer">
+              Overview
+            </button>
+            <button id="cardTabCheckout" onclick="switchRightCardTab('checkout')"
+              class="text-brandMuted hover:text-white pb-1 transition cursor-pointer flex items-center space-x-1">
+              <span>Checkout</span>
+              <span id="cartCountBadge" class="bg-brandYellow text-brandDark text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">0</span>
+            </button>
+            <button id="cardTabStats" onclick="switchRightCardTab('stats')"
+              class="text-brandMuted hover:text-white pb-1 transition cursor-pointer">
+              Stats
+            </button>
           </div>
 
-          <!-- TAB CONTENT 1: POS CATALOG CARDS -->
-          <div id="paneCatalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Dynamic catalog items inserted by JS -->
-          </div>
+          <span class="text-[10px] font-mono bg-brandDark text-brandYellow border border-brandYellow/30 px-2 py-0.5 rounded-md">
+            LIVE ATOMIC
+          </span>
+        </div>
 
-          <!-- TAB CONTENT 2: INVENTORY MANAGER TABLE -->
-          <div id="paneInventory"
-            class="hidden bg-brandSurface border border-brandSilver/15 rounded-xl overflow-hidden">
-            <div class="p-4 border-b border-brandSilver/10 flex justify-between items-center">
-              <div>
-                <h3 class="text-sm font-bold text-white">Stock Allocation & Restock Panel</h3>
-                <p class="text-xs text-brandMuted">Update item stocks and check low-stock thresholds.</p>
+        <!-- SUB-TAB CONTENT 1: PRODUCT OVERVIEW (MATCHING VIDEO SPECIFICATION) -->
+        <div id="cardContentOverview" class="flex-1 flex flex-col justify-between space-y-4">
+          
+          <div class="space-y-4">
+            <!-- Price Accent Badge Square + Title -->
+            <div class="flex items-start space-x-4">
+              <!-- Large Accent Square Badge with Price -->
+              <div id="overviewPriceBadge" class="w-16 h-16 rounded-2xl bg-brandYellow text-brandDark font-extrabold flex flex-col items-center justify-center shadow-lg shrink-0">
+                <span class="text-[10px] font-bold uppercase tracking-wider opacity-80">Price</span>
+                <span id="overviewPriceText" class="text-base font-mono leading-none">₹60</span>
               </div>
-              <button onclick="openAddProductModal()"
-                class="text-xs bg-brandYellow text-brandDark font-bold px-3 py-1.5 rounded-lg hover:bg-brandYellowHover">
-                + New Item
-              </button>
+
+              <div class="space-y-1 overflow-hidden">
+                <span id="overviewSKU" class="text-[10px] font-mono text-brandYellow bg-brandYellow/10 px-2 py-0.5 rounded border border-brandYellow/20">P001</span>
+                <h4 id="overviewName" class="text-base font-extrabold text-white leading-tight truncate">Spiral Notebook (200 Pgs)</h4>
+                <p id="overviewCategory" class="text-xs text-brandMuted">Stationery Department</p>
+              </div>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-brandSilver">
-                <thead class="bg-brandDark text-brandMuted uppercase font-mono border-b border-brandSilver/10">
-                  <tr>
-                    <th class="p-3">SKU</th>
-                    <th class="p-3">Product Name</th>
-                    <th class="p-3">Category</th>
-                    <th class="p-3">Price</th>
-                    <th class="p-3">Current Stock</th>
-                    <th class="p-3 text-right">Quick Action</th>
-                  </tr>
-                </thead>
-                <tbody id="inventoryTableBody" class="divide-y divide-brandSilver/10">
-                  <!-- Dynamic Inventory Rows -->
-                </tbody>
-              </table>
+
+            <!-- Description Block -->
+            <div class="bg-brandDark/60 p-3.5 rounded-2xl border border-brandSilver/10 space-y-1.5 text-xs">
+              <span class="text-[10px] font-bold text-brandMuted uppercase tracking-wider block">Description & Spec</span>
+              <p id="overviewDesc" class="text-brandSilver text-xs leading-relaxed">
+                Premium 200-page ruled spiral notebook designed for university lectures and daily note taking. High GSM bleed-resistant paper.
+              </p>
+            </div>
+
+            <!-- Visual Stock Availability Progress Bar -->
+            <div class="bg-brandDark/60 p-3.5 rounded-2xl border border-brandSilver/10 space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-brandMuted font-semibold">Stock Availability</span>
+                <span id="overviewStockRatio" class="font-mono text-white font-bold">45 / 50 Units</span>
+              </div>
+              <div class="w-full h-2 bg-brandSurface rounded-full overflow-hidden">
+                <div id="overviewStockBar" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 90%;"></div>
+              </div>
             </div>
           </div>
 
-          <!-- TAB CONTENT 3: TRANSACTION SALES HISTORY -->
-          <div id="paneHistory" class="hidden bg-brandSurface border border-brandSilver/15 rounded-xl overflow-hidden">
-            <div class="p-4 border-b border-brandSilver/10">
-              <h3 class="text-sm font-bold text-white">Completed Checkout Receipts</h3>
-              <p class="text-xs text-brandMuted">Audit log of client-side atomic transactions.</p>
+          <!-- Bottom Action Row (Like Thumbs Up / Add in Video) -->
+          <div class="pt-2 border-t border-brandSilver/10 flex items-center justify-between">
+            <div id="overviewStockStatus" class="flex items-center space-x-1.5 text-xs text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-xl border border-emerald-400/20 font-bold">
+              <i class="fa-solid fa-circle-check text-[10px]"></i>
+              <span>In Stock</span>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-brandSilver">
-                <thead class="bg-brandDark text-brandMuted uppercase font-mono border-b border-brandSilver/10">
-                  <tr>
-                    <th class="p-3">Receipt ID</th>
-                    <th class="p-3">Timestamp</th>
-                    <th class="p-3">Operator</th>
-                    <th class="p-3">Items Purchased</th>
-                    <th class="p-3 text-right">Total Amount</th>
-                  </tr>
-                </thead>
-                <tbody id="historyTableBody" class="divide-y divide-brandSilver/10">
-                  <!-- Dynamic Sales Rows -->
-                </tbody>
-              </table>
-            </div>
+
+            <button onclick="addCurrentHeroToCart()"
+              class="px-5 py-2.5 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-extrabold text-xs rounded-xl shadow-lg transition flex items-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add to Cart</span>
+            </button>
           </div>
 
         </div>
 
-
-        <!-- RIGHT COLUMN: SEQUENTIAL CHECKOUT & CART TERMINAL (5 cols) -->
-        <div
-          class="lg:col-span-5 bg-brandSurface border-2 border-brandYellow/50 rounded-xl p-5 shadow-xl flex flex-col space-y-4 sticky top-20">
-
-          <div class="flex items-center justify-between border-b border-brandSilver/15 pb-3">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-cart-shopping text-brandYellow text-base"></i>
-              <h3 class="font-bold text-white text-base">Checkout Terminal</h3>
-            </div>
-            <span
-              class="text-xs font-mono bg-brandDark text-brandYellow border border-brandYellow/30 px-2.5 py-1 rounded-md">
-              ATOMIC QUEUE
-            </span>
-          </div>
-
-          <!-- Active Cart Item List -->
-          <div id="cartItemsContainer" class="flex-1 min-h-[220px] max-h-[340px] overflow-y-auto space-y-2.5 pr-1">
+        <!-- SUB-TAB CONTENT 2: CHECKOUT TERMINAL -->
+        <div id="cardContentCheckout" class="hidden flex-1 flex flex-col justify-between space-y-4">
+          
+          <!-- Cart Items Container -->
+          <div id="cartItemsContainer" class="flex-1 min-h-[200px] max-h-[300px] overflow-y-auto space-y-2 pr-1">
             <!-- Dynamic Cart Items -->
           </div>
 
-          <!-- Receipt Pricing Calculation Breakdown -->
-          <div class="bg-brandDark p-4 rounded-xl border border-brandSilver/10 space-y-2 text-xs">
+          <!-- Breakdown -->
+          <div class="bg-brandDark p-3.5 rounded-2xl border border-brandSilver/10 space-y-1.5 text-xs">
             <div class="flex justify-between text-brandMuted">
               <span>Subtotal</span>
               <span id="cartSubtotal" class="font-mono text-brandSilver">₹0.00</span>
             </div>
             <div class="flex justify-between text-brandMuted">
-              <span>Campus Tax / Fee (0%)</span>
+              <span>Campus Tax (0%)</span>
               <span class="font-mono text-brandSilver">₹0.00</span>
             </div>
             <div class="border-t border-brandSilver/10 pt-2 flex justify-between items-center">
-              <span class="text-sm font-bold text-white">Total Amount</span>
+              <span class="text-xs font-bold text-white uppercase">Total Amount</span>
               <span id="cartGrandTotal" class="text-xl font-extrabold font-mono text-brandYellow">₹0.00</span>
             </div>
           </div>
 
-          <!-- Checkout Action Buttons -->
+          <!-- Checkout Actions -->
           <div class="space-y-2">
             <button onclick="processCheckout()" id="btnCheckout" disabled
-              class="w-full py-3.5 bg-brandYellow hover:bg-brandYellowHover disabled:opacity-40 disabled:hover:bg-brandYellow text-brandDark font-extrabold rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-sm glow-yellow">
+              class="w-full py-3 bg-brandYellow hover:bg-brandYellowHover disabled:opacity-40 disabled:hover:bg-brandYellow text-brandDark font-extrabold rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-xs glow-yellow cursor-pointer">
               <i class="fa-solid fa-bolt"></i>
               <span>Complete Checkout</span>
             </button>
 
             <button onclick="clearCart()"
-              class="w-full py-2 bg-transparent hover:bg-brandDark text-brandMuted hover:text-rose-400 font-semibold rounded-lg text-xs transition border border-transparent hover:border-brandSilver/10">
+              class="w-full py-1.5 text-brandMuted hover:text-rose-400 font-semibold rounded-lg text-[11px] transition cursor-pointer">
               Clear Terminal Cart
             </button>
           </div>
 
         </div>
 
+        <!-- SUB-TAB CONTENT 3: STATS & KPIs GRID -->
+        <div id="cardContentStats" class="hidden flex-1 flex flex-col justify-between space-y-4">
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Metric 1 -->
+            <div class="bg-brandDark p-3.5 rounded-2xl border border-brandSilver/10 space-y-1">
+              <span class="text-[10px] font-bold text-brandMuted uppercase tracking-wider block">Active SKUs</span>
+              <span id="kpiTotalProducts" class="text-xl font-bold text-white">6</span>
+            </div>
+            <!-- Metric 2 -->
+            <div class="bg-brandDark p-3.5 rounded-2xl border border-brandSilver/10 space-y-1">
+              <span class="text-[10px] font-bold text-brandMuted uppercase tracking-wider block">Low Stock</span>
+              <span id="kpiLowStock" class="text-xl font-bold text-amber-400">1</span>
+            </div>
+            <!-- Metric 3 -->
+            <div class="bg-brandDark p-3.5 rounded-2xl border border-brandSilver/10 space-y-1">
+              <span class="text-[10px] font-bold text-brandMuted uppercase tracking-wider block">Total Sales</span>
+              <span id="kpiRevenue" class="text-lg font-bold font-mono text-brandYellow">₹1,220.00</span>
+            </div>
+            <!-- Metric 4 -->
+            <div class="bg-brandDark p-3.5 rounded-2xl border border-brandSilver/10 space-y-1">
+              <span class="text-[10px] font-bold text-brandMuted uppercase tracking-wider block">Transactions</span>
+              <span id="kpiTransactions" class="text-xl font-bold text-emerald-400">4</span>
+            </div>
+          </div>
+
+          <div class="bg-brandDark/50 p-3 rounded-xl border border-brandSilver/10 text-[11px] text-brandMuted text-center font-mono">
+            Sequential Terminal Lock • Zero Race Condition Safeguard
+          </div>
+        </div>
+
       </div>
 
     </main>
-
-    <!-- FOOTER BAR -->
-    <footer
-      class="bg-brandSurface/40 border-t border-brandSilver/10 py-3 px-6 text-center text-xs text-brandMuted font-mono">
-      Campus Store Inventory & Sequential Checkout • Engineered with Zero-Race-Condition Atomic Verification
-    </footer>
   </section>
 
 
   <!-- ========================================================================= -->
-  <!-- MODAL: ADD NEW PRODUCT (STORE ADMIN TOOL)                                 -->
+  <!-- MODAL 1: ADD NEW PRODUCT (STORE ADMIN TOOL)                               -->
   <!-- ========================================================================= -->
   <div id="modalAddProduct"
     class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -769,7 +935,7 @@
           <i class="fa-solid fa-plus-circle text-brandYellow"></i>
           <span>Add New Catalog Item</span>
         </h3>
-        <button onclick="closeAddProductModal()" class="text-brandMuted hover:text-white text-lg">
+        <button onclick="closeAddProductModal()" class="text-brandMuted hover:text-white text-lg cursor-pointer">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -813,15 +979,64 @@
 
         <div class="pt-3 flex space-x-3">
           <button type="button" onclick="closeAddProductModal()"
-            class="w-1/2 py-2.5 bg-brandDark text-brandSilver text-xs font-semibold rounded-xl border border-brandSilver/20 hover:bg-brandSurfaceHover">
+            class="w-1/2 py-2.5 bg-brandDark text-brandSilver text-xs font-semibold rounded-xl border border-brandSilver/20 hover:bg-brandSurfaceHover cursor-pointer">
             Cancel
           </button>
           <button type="submit"
-            class="w-1/2 py-2.5 bg-brandYellow text-brandDark font-bold text-xs rounded-xl hover:bg-brandYellowHover">
+            class="w-1/2 py-2.5 bg-brandYellow text-brandDark font-bold text-xs rounded-xl hover:bg-brandYellowHover cursor-pointer">
             Save Product
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 2: DIGITAL RECEIPT AUDIT VIEW                                       -->
+  <!-- ========================================================================= -->
+  <div id="modalReceipt"
+    class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white text-gray-900 rounded-2xl w-full max-w-sm p-6 shadow-2xl space-y-4 font-receipt relative">
+      <button onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-lg cursor-pointer">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center border-b border-dashed border-gray-300 pb-3">
+        <h3 class="text-xl font-bold tracking-tight text-gray-900">CAMPUS POS STORE</h3>
+        <p class="text-xs text-gray-500">Official Terminal Receipt</p>
+        <div id="receiptMeta" class="text-[11px] text-gray-600 mt-2 space-y-0.5">
+          <!-- Receipt metadata -->
+        </div>
+      </div>
+
+      <!-- Item breakdown -->
+      <div id="receiptItems" class="text-xs space-y-1.5 border-b border-dashed border-gray-300 pb-3">
+        <!-- Dynamic items -->
+      </div>
+
+      <!-- Total & Barcode -->
+      <div class="space-y-3 pt-1">
+        <div class="flex justify-between font-bold text-sm">
+          <span>TOTAL PAID</span>
+          <span id="receiptTotal">₹0.00</span>
+        </div>
+
+        <!-- Simulated Barcode -->
+        <div class="text-center pt-2">
+          <div class="inline-block font-mono tracking-widest text-lg font-bold bg-gray-100 px-4 py-1.5 rounded border border-gray-300" id="receiptBarcode">
+            ||||| ||| |||| || |||||
+          </div>
+          <p class="text-[10px] text-gray-400 mt-1">ATOMIC VERIFIED TRANSACTION</p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex space-x-2">
+        <button onclick="window.print()" class="w-full py-2 bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center space-x-1 cursor-pointer font-sans">
+          <i class="fa-solid fa-print"></i>
+          <span>Print Receipt</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -855,12 +1070,84 @@
     };
 
     let products = [
-      { id: 'P001', name: 'Spiral Notebook (200 Pgs)', category: 'Stationery', price: 60.00, stock: 45, initialStock: 50 },
-      { id: 'P002', name: 'Gel Pen Pack (10 Blue)', category: 'Stationery', price: 45.00, stock: 8, initialStock: 50 }, // Low stock
-      { id: 'P003', name: 'Scientific Calculator', category: 'Electronics', price: 850.00, stock: 15, initialStock: 20 },
-      { id: 'P004', name: 'USB-C Flash Drive 64GB', category: 'Electronics', price: 499.00, stock: 22, initialStock: 30 },
-      { id: 'P005', name: 'Campus ID Lanyard', category: 'Accessories', price: 80.00, stock: 60, initialStock: 100 },
-      { id: 'P006', name: 'A4 Artist Sketchpad', category: 'Stationery', price: 150.00, stock: 18, initialStock: 25 },
+      { 
+        id: 'P001', 
+        name: 'Spiral Notebook (200 Pgs)', 
+        titleTop: 'SPIRAL',
+        titleBottom: 'NOTEBOOK',
+        category: 'Stationery', 
+        price: 60.00, 
+        stock: 45, 
+        initialStock: 50,
+        color: '#FFC93C',
+        desc: 'Premium 200-page ruled notebook with high-density wire binding for campus notes.',
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-brandYellow" viewBox="0 0 100 100" fill="none"><rect x="25" y="15" width="55" height="70" rx="4" fill="#34373D" stroke="#FFC93C" stroke-width="4"/><line x1="20" y1="25" x2="30" y2="25" stroke="#D9DADC" stroke-width="4" stroke-linecap="round"/><line x1="20" y1="40" x2="30" y2="40" stroke="#D9DADC" stroke-width="4" stroke-linecap="round"/><line x1="20" y1="55" x2="30" y2="55" stroke="#D9DADC" stroke-width="4" stroke-linecap="round"/><line x1="20" y1="70" x2="30" y2="70" stroke="#D9DADC" stroke-width="4" stroke-linecap="round"/><line x1="38" y1="35" x2="70" y2="35" stroke="#9FA3A9" stroke-width="3"/><line x1="38" y1="48" x2="70" y2="48" stroke="#9FA3A9" stroke-width="3"/><line x1="38" y1="61" x2="60" y2="61" stroke="#9FA3A9" stroke-width="3"/></svg>`
+      },
+      { 
+        id: 'P002', 
+        name: 'Gel Pen Pack (10 Blue)', 
+        titleTop: 'GEL PEN',
+        titleBottom: 'PACK (10X)',
+        category: 'Stationery', 
+        price: 45.00, 
+        stock: 8, 
+        initialStock: 50,
+        color: '#38BDF8',
+        desc: 'Smooth 0.5mm quick-dry gel ink pen bundle. Ergonomic rubber grip for long writing sessions.',
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-sky-400" viewBox="0 0 100 100" fill="none"><path d="M45 15L55 15L52 75L48 75Z" fill="#38BDF8"/><path d="M48 75L50 85L52 75Z" fill="#D9DADC"/><rect x="44" y="25" width="12" height="6" fill="#FFC93C"/><path d="M30 20L40 20L37 75L33 75Z" fill="#34373D" stroke="#38BDF8" stroke-width="2"/><path d="M60 20L70 20L67 75L63 75Z" fill="#34373D" stroke="#38BDF8" stroke-width="2"/></svg>`
+      },
+      { 
+        id: 'P003', 
+        name: 'Scientific Calculator', 
+        titleTop: 'SCIENTIFIC',
+        titleBottom: 'CALCULATOR',
+        category: 'Electronics', 
+        price: 850.00, 
+        stock: 15, 
+        initialStock: 20,
+        color: '#A855F7',
+        desc: 'Advanced 417-function engineering calculator with natural textbook display matrix.',
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-purple-400" viewBox="0 0 100 100" fill="none"><rect x="25" y="15" width="50" height="70" rx="6" fill="#1E2024" stroke="#A855F7" stroke-width="4"/><rect x="32" y="23" width="36" height="14" rx="2" fill="#34373D" stroke="#D9DADC" stroke-width="1.5"/><circle cx="36" cy="48" r="3" fill="#FFC93C"/><circle cx="50" cy="48" r="3" fill="#A855F7"/><circle cx="64" cy="48" r="3" fill="#A855F7"/><circle cx="36" cy="60" r="3" fill="#D9DADC"/><circle cx="50" cy="60" r="3" fill="#D9DADC"/><circle cx="64" cy="60" r="3" fill="#D9DADC"/><circle cx="36" cy="72" r="3" fill="#D9DADC"/><circle cx="50" cy="72" r="3" fill="#D9DADC"/><circle cx="64" cy="72" r="3" fill="#FFC93C"/></svg>`
+      },
+      { 
+        id: 'P004', 
+        name: 'USB-C Flash Drive 64GB', 
+        titleTop: 'USB-C DRIVE',
+        titleBottom: '64GB FLASH',
+        category: 'Electronics', 
+        price: 499.00, 
+        stock: 22, 
+        initialStock: 30,
+        color: '#34D399',
+        desc: 'High-speed USB 3.2 Gen 1 thumb drive with dual Type-A and Type-C retractable connectors.',
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-emerald-400" viewBox="0 0 100 100" fill="none"><rect x="35" y="25" width="30" height="50" rx="4" fill="#34373D" stroke="#34D399" stroke-width="4"/><rect x="40" y="12" width="20" height="13" rx="2" fill="#D9DADC"/><line x1="45" y1="18" x2="45" y2="21" stroke="#2B2D31" stroke-width="2"/><line x1="55" y1="18" x2="55" y2="21" stroke="#2B2D31" stroke-width="2"/><circle cx="50" cy="50" r="6" fill="#34D399"/></svg>`
+      },
+      { 
+        id: 'P005', 
+        name: 'Campus ID Lanyard', 
+        titleTop: 'CAMPUS ID',
+        titleBottom: 'LANYARD',
+        category: 'Accessories', 
+        price: 80.00, 
+        stock: 60, 
+        initialStock: 100,
+        color: '#F43F5E',
+        desc: 'Durable woven nylon lanyard with heavy-duty metal swivel clip and transparent card holder.',
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-rose-500" viewBox="0 0 100 100" fill="none"><path d="M30 15C30 15 50 35 50 50C50 35 70 15 70 15" stroke="#F43F5E" stroke-width="5" stroke-linecap="round"/><rect x="38" y="52" width="24" height="32" rx="3" fill="#1E2024" stroke="#D9DADC" stroke-width="2"/><circle cx="50" cy="62" r="4" fill="#FFC93C"/><line x1="43" y1="73" x2="57" y2="73" stroke="#9FA3A9" stroke-width="2"/></svg>`
+      },
+      { 
+        id: 'P006', 
+        name: 'A4 Artist Sketchpad', 
+        titleTop: 'ARTIST A4',
+        titleBottom: 'SKETCHPAD',
+        category: 'Stationery', 
+        price: 150.00, 
+        stock: 18, 
+        initialStock: 25,
+        color: '#FB923C',
+        desc: '180 GSM heavyweight cold-pressed watercolor and graphite paper sketchbook.',
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-orange-400" viewBox="0 0 100 100" fill="none"><rect x="22" y="20" width="56" height="65" rx="3" fill="#34373D" stroke="#FB923C" stroke-width="4"/><path d="M30 35L45 55L55 45L70 65H30V35Z" fill="#FB923C" opacity="0.7"/><circle cx="62" cy="35" r="5" fill="#FFC93C"/></svg>`
+      },
     ];
 
     let cart = [];
@@ -873,6 +1160,65 @@
     ];
 
     let activeCategory = 'All';
+    let currentHeroIndex = 0;
+    let activeRightCardTab = 'overview';
+    let isSoundEnabled = true;
+
+    // -------------------------------------------------------------------------
+    // WEB AUDIO API SOUND EFFECTS
+    // -------------------------------------------------------------------------
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playAudio(type) {
+      if (!isSoundEnabled) return;
+      try {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'beep') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'checkout') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.25); // C6
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        } else if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.05);
+        }
+      } catch (e) {
+        // Audio fallback ignore
+      }
+    }
+
+    function toggleAudio() {
+      isSoundEnabled = !isSoundEnabled;
+      const icon = document.getElementById('audioIcon');
+      if (isSoundEnabled) {
+        icon.className = 'fa-solid fa-volume-high text-brandYellow';
+        showToast('Sound On', 'Audio feedback activated.');
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-brandMuted';
+        showToast('Sound Off', 'Audio feedback muted.');
+      }
+    }
 
     // -------------------------------------------------------------------------
     // VIEW SWITCHING ENGINE
@@ -895,6 +1241,7 @@
 
     // Toggle between Login & Register diagonal panes
     function toggleAuthMode(isRegister) {
+      playAudio('click');
       const authCard = document.getElementById('authCard');
       if (isRegister) {
         authCard.classList.add('active-register');
@@ -914,6 +1261,7 @@
       currentUser.name = usernameInput || 'Operator';
       currentUser.role = selectedRole;
 
+      playAudio('checkout');
       showToast('Logged In', `Welcome back, ${currentUser.name}!`);
       goToView('viewDashboard');
     }
@@ -926,21 +1274,23 @@
       currentUser.name = usernameInput || 'NewOperator';
       currentUser.role = selectedRole;
 
+      playAudio('checkout');
       showToast('Account Created', `Registered as ${currentUser.name} (${currentUser.role})`);
       goToView('viewDashboard');
     }
 
     function toggleActiveRole() {
+      playAudio('click');
       currentUser.role = (currentUser.role === 'C001') ? 'S001' : 'C001';
       renderDashboardUI();
       showToast('Role Switched', `Active role is now ${currentUser.role === 'C001' ? 'Cashier (C001)' : 'Store Admin (S001)'}`);
     }
 
     // -------------------------------------------------------------------------
-    // DASHBOARD & CATALOG RENDERING
+    // DASHBOARD & CAROUSEL RENDERING
     // -------------------------------------------------------------------------
     function renderDashboardUI() {
-      // Update User Info in Header
+      // User Info Header
       document.getElementById('displayUsername').innerText = currentUser.name;
       document.getElementById('userAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
 
@@ -949,130 +1299,284 @@
 
       if (currentUser.role === 'S001') {
         badge.innerText = 'S001 (Store Admin)';
-        badge.className = 'font-bold text-brandDark bg-brandYellow px-2 py-0.5 rounded';
+        badge.className = 'font-bold text-brandDark bg-brandYellow px-2 py-0.5 rounded-md';
         btnAddProd.classList.remove('hidden');
       } else {
         badge.innerText = 'C001 (Cashier)';
-        badge.className = 'font-bold text-brandYellow bg-brandYellow/10 px-2 py-0.5 rounded';
+        badge.className = 'font-bold text-brandYellow bg-brandYellow/10 px-2 py-0.5 rounded-md';
         btnAddProd.classList.add('hidden');
       }
 
       updateKPIs();
-      renderCatalog();
-      renderInventoryTable();
-      renderSalesHistoryTable();
+      renderCarouselStage();
+      renderVerticalDots();
+      renderThumbnails();
+      updateRightCardOverview();
       renderCart();
     }
 
-    function updateKPIs() {
-      document.getElementById('kpiTotalProducts').innerText = products.length;
-
-      const lowStockCount = products.filter(p => p.stock <= 10).length;
-      document.getElementById('kpiLowStock').innerText = lowStockCount;
-
-      const totalRevenue = salesTransactions.reduce((acc, t) => acc + t.total, 0);
-      document.getElementById('kpiRevenue').innerText = `₹${totalRevenue.toFixed(2)}`;
-
-      document.getElementById('kpiTransactions').innerText = salesTransactions.length;
-    }
-
-    // Catalog Grid
-    function renderCatalog() {
-      const pane = document.getElementById('paneCatalog');
-      const query = document.getElementById('searchInput').value.toLowerCase();
-
-      const filtered = products.filter(p => {
+    function getFilteredProducts() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      return products.filter(p => {
         const matchesCat = (activeCategory === 'All') || (p.category === activeCategory);
         const matchesQuery = p.name.toLowerCase().includes(query) || p.id.toLowerCase().includes(query);
         return matchesCat && matchesQuery;
       });
+    }
 
+    function renderCarouselStage() {
+      const filtered = getFilteredProducts();
       if (filtered.length === 0) {
-        pane.innerHTML = `
-          <div class="col-span-2 bg-brandSurface border border-brandSilver/10 rounded-xl p-8 text-center text-brandMuted">
-            <i class="fa-solid fa-magnifying-glass text-3xl mb-2 text-brandSilver/40"></i>
-            <p class="text-xs">No matching products found in catalog.</p>
-          </div>
-        `;
+        document.getElementById('heroTagline').innerText = 'NO MATCHES';
+        document.getElementById('heroTitleTop').innerText = 'NO ITEMS';
+        document.getElementById('heroTitleBottom').innerText = 'FOUND';
+        document.getElementById('heroSvgArt').innerHTML = `<i class="fa-solid fa-box-open text-6xl text-brandMuted"></i>`;
         return;
       }
 
-      pane.innerHTML = filtered.map(p => {
-        const isLowStock = p.stock <= 10;
-        const isOutOfStock = p.stock === 0;
+      if (currentHeroIndex >= filtered.length) {
+        currentHeroIndex = 0;
+      }
 
+      const activeItem = filtered[currentHeroIndex];
+      const nextItem = filtered[(currentHeroIndex + 1) % filtered.length];
+
+      // Update Sweeping Ribbon Gradient
+      const gradStop = document.getElementById('gradStop1');
+      if (gradStop) {
+        gradStop.setAttribute('stop-color', activeItem.color || '#FFC93C');
+      }
+
+      // Hero Tagline & Display Title
+      document.getElementById('heroTagline').innerText = `#${currentHeroIndex + 1} CAMPUS ESSENTIAL • ${activeItem.id}`;
+      document.getElementById('heroTitleTop').innerText = activeItem.titleTop || activeItem.name.split(' ')[0];
+      document.getElementById('heroTitleBottom').innerText = activeItem.titleBottom || activeItem.name.split(' ').slice(1).join(' ');
+
+      // Disk Glow & SVG Art
+      const discGlow = document.getElementById('heroDiscGlow');
+      if (discGlow) {
+        discGlow.style.backgroundColor = `${activeItem.color}33`;
+      }
+      document.getElementById('heroSvgArt').innerHTML = activeItem.svg;
+
+      // Update Peek Product (Upper Right Curve)
+      document.getElementById('peekProductName').innerText = nextItem.name;
+      document.getElementById('peekSvgContainer').innerHTML = nextItem.svg;
+
+      // Update Overview Card Data
+      updateRightCardOverview(activeItem);
+    }
+
+    function renderVerticalDots() {
+      const filtered = getFilteredProducts();
+      const container = document.getElementById('verticalDotsContainer');
+      container.innerHTML = filtered.map((p, idx) => {
+        const isActive = idx === currentHeroIndex;
         return `
-          <div class="bg-brandSurface border border-brandSilver/15 hover:border-brandYellow rounded-xl p-4 flex flex-col justify-between transition duration-200 group">
-            <div>
-              <div class="flex justify-between items-start mb-2">
-                <span class="text-[10px] font-mono text-brandMuted bg-brandDark px-2 py-0.5 rounded border border-brandSilver/10">${p.id}</span>
-                <span class="text-[11px] font-semibold ${isOutOfStock ? 'text-rose-400 bg-rose-500/10' : isLowStock ? 'text-amber-400 bg-amber-400/10' : 'text-emerald-400 bg-emerald-400/10'} px-2 py-0.5 rounded-full">
-                  ${isOutOfStock ? 'Out of Stock' : `${p.stock} units left`}
-                </span>
-              </div>
-              <h4 class="font-bold text-white text-sm mb-1 group-hover:text-brandYellow transition">${p.name}</h4>
-              <span class="text-xs text-brandMuted block mb-3">${p.category}</span>
-            </div>
+          <button onclick="jumpToProduct(${idx})" class="transition-all duration-300 cursor-pointer ${isActive ? 'w-2.5 h-7 bg-brandYellow rounded-full shadow-lg glow-yellow' : 'w-2.5 h-2.5 bg-brandSilver/30 hover:bg-brandSilver rounded-full'}"></button>
+        `;
+      }).join('');
+    }
 
-            <div class="flex items-center justify-between pt-2 border-t border-brandSilver/10">
-              <span class="text-lg font-extrabold font-mono text-brandYellow">₹${p.price.toFixed(2)}</span>
-              <button onclick="addToCart('${p.id}')" ${isOutOfStock ? 'disabled' : ''} class="px-3 py-1.5 bg-brandYellow hover:bg-brandYellowHover disabled:opacity-30 disabled:hover:bg-brandYellow text-brandDark font-bold text-xs rounded-lg transition flex items-center space-x-1 shadow">
-                <i class="fa-solid fa-cart-plus"></i>
-                <span>Add</span>
-              </button>
+    function renderThumbnails() {
+      const filtered = getFilteredProducts();
+      const container = document.getElementById('thumbnailRow');
+
+      container.innerHTML = filtered.map((p, idx) => {
+        const isActive = idx === currentHeroIndex;
+        return `
+          <div onclick="jumpToProduct(${idx})" 
+            class="flex items-center space-x-3 p-2 px-3 rounded-2xl border transition duration-300 cursor-pointer shrink-0 ${isActive ? 'bg-panelDark border-brandYellow scale-105 shadow-xl' : 'bg-brandDark/80 border-brandSilver/10 hover:border-brandSilver/30 opacity-70 hover:opacity-100'}">
+            <div class="w-9 h-9 rounded-xl bg-brandSurface flex items-center justify-center p-1 border border-brandSilver/10">
+              ${p.svg}
+            </div>
+            <div class="space-y-0.5 pr-1">
+              <h5 class="text-xs font-bold text-white max-w-[110px] truncate">${p.name}</h5>
+              <div class="flex items-center space-x-2 text-[10px]">
+                <span class="font-mono text-brandYellow font-bold">₹${p.price.toFixed(0)}</span>
+                <span class="${p.stock <= 10 ? 'text-amber-400' : 'text-emerald-400'} font-semibold">${p.stock} left</span>
+              </div>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    function filterCategory(catName) {
-      activeCategory = catName;
-      document.querySelectorAll('.cat-pill').forEach(btn => {
-        if (btn.innerText.trim() === catName) {
-          btn.className = 'cat-pill px-3 py-1.5 rounded-lg bg-brandYellow text-brandDark font-bold whitespace-nowrap';
-        } else {
-          btn.className = 'cat-pill px-3 py-1.5 rounded-lg bg-brandDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap';
-        }
-      });
-      renderCatalog();
+    function updateRightCardOverview(item) {
+      const activeItem = item || getFilteredProducts()[currentHeroIndex];
+      if (!activeItem) return;
+
+      document.getElementById('overviewPriceText').innerText = `₹${activeItem.price.toFixed(0)}`;
+      document.getElementById('overviewSKU').innerText = activeItem.id;
+      document.getElementById('overviewName').innerText = activeItem.name;
+      document.getElementById('overviewCategory').innerText = `${activeItem.category} Dept`;
+      document.getElementById('overviewDesc').innerText = activeItem.desc || 'Campus verified essential item.';
+
+      const stockRatio = Math.min(100, Math.round((activeItem.stock / (activeItem.initialStock || 50)) * 100));
+      document.getElementById('overviewStockRatio').innerText = `${activeItem.stock} / ${activeItem.initialStock || 50} Units`;
+
+      const bar = document.getElementById('overviewStockBar');
+      bar.style.width = `${stockRatio}%`;
+      if (activeItem.stock <= 5) {
+        bar.className = 'h-full bg-rose-500 rounded-full transition-all duration-500';
+      } else if (activeItem.stock <= 10) {
+        bar.className = 'h-full bg-amber-400 rounded-full transition-all duration-500';
+      } else {
+        bar.className = 'h-full bg-emerald-400 rounded-full transition-all duration-500';
+      }
+
+      const status = document.getElementById('overviewStockStatus');
+      if (activeItem.stock === 0) {
+        status.className = 'flex items-center space-x-1.5 text-xs text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20 font-bold';
+        status.innerHTML = `<i class="fa-solid fa-circle-xmark text-[10px]"></i><span>Out of Stock</span>`;
+      } else if (activeItem.stock <= 10) {
+        status.className = 'flex items-center space-x-1.5 text-xs text-amber-400 bg-amber-400/10 px-3 py-1.5 rounded-xl border border-amber-400/20 font-bold';
+        status.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-[10px]"></i><span>Low Stock</span>`;
+      } else {
+        status.className = 'flex items-center space-x-1.5 text-xs text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-xl border border-emerald-400/20 font-bold';
+        status.innerHTML = `<i class="fa-solid fa-circle-check text-[10px]"></i><span>In Stock</span>`;
+      }
     }
 
-    function switchDashboardTab(tab) {
-      const paneCatalog = document.getElementById('paneCatalog');
-      const paneInventory = document.getElementById('paneInventory');
-      const paneHistory = document.getElementById('paneHistory');
-      const filterBar = document.getElementById('catalogFilterBar');
+    // Carousel Navigation Handlers
+    function jumpToProduct(index) {
+      playAudio('click');
+      const disc = document.getElementById('heroDisc');
+      disc.classList.add('disc-slide-out');
+      setTimeout(() => {
+        currentHeroIndex = index;
+        renderCarouselStage();
+        renderVerticalDots();
+        renderThumbnails();
+        disc.classList.remove('disc-slide-out');
+        disc.classList.add('disc-slide-in');
+      }, 200);
+    }
 
-      const btnCat = document.getElementById('tabCatalog');
-      const btnInv = document.getElementById('tabInventory');
-      const btnHis = document.getElementById('tabHistory');
+    function nextProduct() {
+      const filtered = getFilteredProducts();
+      if (filtered.length === 0) return;
+      const nextIdx = (currentHeroIndex + 1) % filtered.length;
+      jumpToProduct(nextIdx);
+    }
 
-      // Reset buttons
-      [btnCat, btnInv, btnHis].forEach(b => {
-        b.className = 'px-4 py-2 rounded-lg text-brandSilver hover:text-white transition';
+    function prevProduct() {
+      const filtered = getFilteredProducts();
+      if (filtered.length === 0) return;
+      const prevIdx = (currentHeroIndex - 1 + filtered.length) % filtered.length;
+      jumpToProduct(prevIdx);
+    }
+
+    function addCurrentHeroToCart() {
+      const filtered = getFilteredProducts();
+      if (filtered.length > 0) {
+        addToCart(filtered[currentHeroIndex].id);
+        // Subtle bounce badge effect
+        const badge = document.getElementById('cartCountBadge');
+        badge.classList.add('animate-bounce');
+        setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+      }
+    }
+
+    function restockCurrentHero() {
+      const filtered = getFilteredProducts();
+      if (filtered.length > 0) {
+        restockItem(filtered[currentHeroIndex].id, 10);
+      }
+    }
+
+    function filterCategory(catName) {
+      playAudio('click');
+      activeCategory = catName;
+      currentHeroIndex = 0;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.innerText.trim() === catName) {
+          btn.className = 'cat-pill px-3 py-1 rounded-full bg-brandYellow text-brandDark font-bold whitespace-nowrap cursor-pointer';
+        } else {
+          btn.className = 'cat-pill px-3 py-1 rounded-full bg-panelDark text-brandSilver border border-brandSilver/10 hover:border-brandYellow whitespace-nowrap cursor-pointer';
+        }
+      });
+      renderCarouselStage();
+      renderVerticalDots();
+      renderThumbnails();
+    }
+
+    function handleSearchInput() {
+      currentHeroIndex = 0;
+      renderCarouselStage();
+      renderVerticalDots();
+      renderThumbnails();
+    }
+
+    // -------------------------------------------------------------------------
+    // MAIN STAGE MODE SWITCHER (POS CAROUSEL / INVENTORY / HISTORY)
+    // -------------------------------------------------------------------------
+    function switchMainStageMode(mode) {
+      playAudio('click');
+      const stageCarousel = document.getElementById('stageCarousel');
+      const stageInventory = document.getElementById('stageInventory');
+      const stageHistory = document.getElementById('stageHistory');
+
+      const navTabCarousel = document.getElementById('navTabCarousel');
+      const navTabInventory = document.getElementById('navTabInventory');
+      const navTabHistory = document.getElementById('navTabHistory');
+
+      [navTabCarousel, navTabInventory, navTabHistory].forEach(b => {
+        b.className = 'px-3.5 py-1.5 rounded-lg text-brandSilver hover:text-white transition cursor-pointer whitespace-nowrap';
       });
 
-      if (tab === 'catalog') {
-        paneCatalog.classList.remove('hidden');
-        paneInventory.classList.add('hidden');
-        paneHistory.classList.add('hidden');
-        filterBar.classList.remove('hidden');
-        btnCat.className = 'px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition';
-      } else if (tab === 'inventory') {
-        paneCatalog.classList.add('hidden');
-        paneInventory.classList.remove('hidden');
-        paneHistory.classList.add('hidden');
-        filterBar.classList.add('hidden');
-        btnInv.className = 'px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition';
+      if (mode === 'carousel') {
+        stageCarousel.classList.remove('hidden');
+        stageInventory.classList.add('hidden');
+        stageHistory.classList.add('hidden');
+        navTabCarousel.className = 'px-3.5 py-1.5 rounded-lg text-brandDark bg-brandYellow font-bold transition cursor-pointer whitespace-nowrap';
+      } else if (mode === 'inventory') {
+        stageCarousel.classList.add('hidden');
+        stageInventory.classList.remove('hidden');
+        stageHistory.classList.add('hidden');
+        navTabInventory.className = 'px-3.5 py-1.5 rounded-lg text-brandDark bg-brandYellow font-bold transition cursor-pointer whitespace-nowrap';
         renderInventoryTable();
-      } else if (tab === 'history') {
-        paneCatalog.classList.add('hidden');
-        paneInventory.classList.add('hidden');
-        paneHistory.classList.remove('hidden');
-        filterBar.classList.add('hidden');
-        btnHis.className = 'px-4 py-2 rounded-lg text-brandDark bg-brandYellow font-bold transition';
+      } else if (mode === 'history') {
+        stageCarousel.classList.add('hidden');
+        stageInventory.classList.add('hidden');
+        stageHistory.classList.remove('hidden');
+        navTabHistory.className = 'px-3.5 py-1.5 rounded-lg text-brandDark bg-brandYellow font-bold transition cursor-pointer whitespace-nowrap';
         renderSalesHistoryTable();
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // RIGHT FLOATING CARD SUB-TAB SWITCHER
+    // -------------------------------------------------------------------------
+    function switchRightCardTab(tab) {
+      playAudio('click');
+      activeRightCardTab = tab;
+
+      const cardOverview = document.getElementById('cardContentOverview');
+      const cardCheckout = document.getElementById('cardContentCheckout');
+      const cardStats = document.getElementById('cardContentStats');
+
+      const btnOverview = document.getElementById('cardTabOverview');
+      const btnCheckout = document.getElementById('cardTabCheckout');
+      const btnStats = document.getElementById('cardTabStats');
+
+      [btnOverview, btnCheckout, btnStats].forEach(b => {
+        b.className = 'text-brandMuted hover:text-white pb-1 transition cursor-pointer';
+      });
+
+      cardOverview.classList.add('hidden');
+      cardCheckout.classList.add('hidden');
+      cardStats.classList.add('hidden');
+
+      if (tab === 'overview') {
+        cardOverview.classList.remove('hidden');
+        btnOverview.className = 'text-brandYellow border-b-2 border-brandYellow pb-1 transition cursor-pointer';
+      } else if (tab === 'checkout') {
+        cardCheckout.classList.remove('hidden');
+        btnCheckout.className = 'text-brandYellow border-b-2 border-brandYellow pb-1 transition cursor-pointer flex items-center space-x-1';
+      } else if (tab === 'stats') {
+        cardStats.classList.remove('hidden');
+        btnStats.className = 'text-brandYellow border-b-2 border-brandYellow pb-1 transition cursor-pointer';
       }
     }
 
@@ -1083,17 +1587,17 @@
       const tbody = document.getElementById('inventoryTableBody');
       tbody.innerHTML = products.map(p => `
         <tr class="hover:bg-brandDark/40 transition">
-          <td class="p-3 font-mono text-brandYellow">${p.id}</td>
-          <td class="p-3 font-semibold text-white">${p.name}</td>
-          <td class="p-3 text-brandMuted">${p.category}</td>
-          <td class="p-3 font-mono">₹${p.price.toFixed(2)}</td>
-          <td class="p-3">
+          <td class="p-3.5 font-mono text-brandYellow">${p.id}</td>
+          <td class="p-3.5 font-semibold text-white">${p.name}</td>
+          <td class="p-3.5 text-brandMuted">${p.category}</td>
+          <td class="p-3.5 font-mono">₹${p.price.toFixed(2)}</td>
+          <td class="p-3.5">
             <span class="font-bold ${p.stock <= 10 ? 'text-amber-400' : 'text-emerald-400'}">
               ${p.stock} units
             </span>
           </td>
-          <td class="p-3 text-right">
-            <button onclick="restockItem('${p.id}', 10)" class="bg-brandDark hover:bg-brandSurfaceHover text-brandYellow border border-brandYellow/30 px-2.5 py-1 rounded-md text-[11px] font-bold transition">
+          <td class="p-3.5 text-right">
+            <button onclick="restockItem('${p.id}', 10)" class="bg-panelDark hover:bg-brandSurfaceHover text-brandYellow border border-brandYellow/30 px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer">
               +10 Restock
             </button>
           </td>
@@ -1105,13 +1609,14 @@
       const prod = products.find(p => p.id === id);
       if (prod) {
         prod.stock += amount;
+        playAudio('beep');
         renderDashboardUI();
-        showToast('Inventory Updated', `Restocked +${amount} units for ${prod.name}`);
+        showToast('Inventory Restocked', `Added +${amount} units to ${prod.name}`);
       }
     }
 
-    // Add Product Modal
     function openAddProductModal() {
+      playAudio('click');
       document.getElementById('modalAddProduct').classList.remove('hidden');
     }
     function closeAddProductModal() {
@@ -1120,24 +1625,35 @@
 
     function handleCreateProduct(e) {
       e.preventDefault();
-      const name = document.getElementById('newProdName').value;
-      const sku = document.getElementById('newProdSKU').value.toUpperCase();
+      const name = document.getElementById('newProdName').value.trim();
+      const sku = document.getElementById('newProdSKU').value.trim().toUpperCase();
       const category = document.getElementById('newProdCategory').value;
       const price = parseFloat(document.getElementById('newProdPrice').value);
       const stock = parseInt(document.getElementById('newProdStock').value);
 
+      if (products.some(p => p.id === sku)) {
+        showToast('SKU Exists', `Product with SKU ${sku} already exists!`, true);
+        return;
+      }
+
       products.push({
         id: sku,
         name: name,
+        titleTop: name.split(' ')[0].toUpperCase(),
+        titleBottom: name.split(' ').slice(1).join(' ').toUpperCase() || 'ITEM',
         category: category,
         price: price,
         stock: stock,
-        initialStock: stock
+        initialStock: stock,
+        color: '#FFC93C',
+        desc: `${category} department item.`,
+        svg: `<svg class="w-32 h-32 md:w-44 md:h-44 text-brandYellow" viewBox="0 0 100 100" fill="none"><rect x="25" y="20" width="50" height="60" rx="6" fill="#34373D" stroke="#FFC93C" stroke-width="4"/><circle cx="50" cy="50" r="12" fill="#FFC93C"/></svg>`
       });
 
+      playAudio('beep');
       closeAddProductModal();
       renderDashboardUI();
-      showToast('Product Created', `${name} (${sku}) added to store catalog.`);
+      showToast('Product Created', `${name} (${sku}) added to catalog.`);
     }
 
     // Sales History Table
@@ -1145,13 +1661,29 @@
       const tbody = document.getElementById('historyTableBody');
       tbody.innerHTML = salesTransactions.map(t => `
         <tr class="hover:bg-brandDark/40 transition">
-          <td class="p-3 font-mono text-brandYellow">${t.id}</td>
-          <td class="p-3 text-brandMuted">${t.time}</td>
-          <td class="p-3 font-semibold text-white">${t.operator}</td>
-          <td class="p-3 text-brandSilver">${t.itemSummary}</td>
-          <td class="p-3 font-mono font-bold text-right text-brandYellow">₹${t.total.toFixed(2)}</td>
+          <td class="p-3.5 font-mono text-brandYellow">${t.id}</td>
+          <td class="p-3.5 text-brandMuted">${t.time}</td>
+          <td class="p-3.5 font-semibold text-white">${t.operator}</td>
+          <td class="p-3.5 text-brandSilver">${t.itemSummary}</td>
+          <td class="p-3.5 font-mono font-bold text-right text-brandYellow">₹${t.total.toFixed(2)}</td>
         </tr>
       `).join('');
+    }
+
+    function exportSalesLogCSV() {
+      playAudio('click');
+      let csvContent = "data:text/csv;charset=utf-8,ReceiptID,Time,Operator,ItemsSummary,TotalAmount\n";
+      salesTransactions.forEach(t => {
+        csvContent += `"${t.id}","${t.time}","${t.operator}","${t.itemSummary.replace(/"/g, '""')}","${t.total}"\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `CAMPUS_POS_Sales_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV Exported', 'Sales transaction report downloaded.');
     }
 
     // -------------------------------------------------------------------------
@@ -1165,6 +1697,7 @@
       if (cartItem) {
         if (cartItem.qty < item.stock) {
           cartItem.qty += 1;
+          playAudio('beep');
         } else {
           showToast('Stock Limit Reached', `Only ${item.stock} units available in stock.`, true);
           return;
@@ -1176,6 +1709,7 @@
           price: item.price,
           qty: 1
         });
+        playAudio('beep');
       }
 
       renderCart();
@@ -1187,10 +1721,11 @@
 
       if (cartItem && prod) {
         if (delta > 0 && cartItem.qty >= prod.stock) {
-          showToast('Stock Limit', `Maximum available stock reached for ${prod.name}`, true);
+          showToast('Stock Limit', `Maximum stock reached for ${prod.name}`, true);
           return;
         }
         cartItem.qty += delta;
+        playAudio('click');
         if (cartItem.qty <= 0) {
           cart = cart.filter(c => c.id !== productId);
         }
@@ -1199,11 +1734,13 @@
     }
 
     function removeFromCart(productId) {
+      playAudio('click');
       cart = cart.filter(c => c.id !== productId);
       renderCart();
     }
 
     function clearCart() {
+      if (cart.length > 0) playAudio('click');
       cart = [];
       renderCart();
     }
@@ -1211,12 +1748,15 @@
     function renderCart() {
       const container = document.getElementById('cartItemsContainer');
       const btnCheckout = document.getElementById('btnCheckout');
+      const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
+
+      document.getElementById('cartCountBadge').innerText = totalCount;
 
       if (cart.length === 0) {
         container.innerHTML = `
           <div class="h-full flex flex-col items-center justify-center text-center p-6 text-brandMuted">
             <i class="fa-solid fa-basket-shopping text-3xl mb-2 text-brandSilver/30"></i>
-            <p class="text-xs">Terminal cart is empty.<br>Select items from catalog to start checkout.</p>
+            <p class="text-xs">Terminal cart is empty.<br>Add items from carousel to begin checkout.</p>
           </div>
         `;
         document.getElementById('cartSubtotal').innerText = '₹0.00';
@@ -1233,25 +1773,22 @@
         subtotal += itemTotal;
 
         return `
-          <div class="bg-brandDark p-3 rounded-xl border border-brandSilver/10 flex items-center justify-between">
-            <div class="space-y-0.5">
-              <h5 class="text-xs font-bold text-white">${item.name}</h5>
-              <div class="text-[11px] font-mono text-brandYellow">₹${item.price.toFixed(2)} ea</div>
+          <div class="bg-brandDark p-3 rounded-2xl border border-brandSilver/10 flex items-center justify-between">
+            <div class="space-y-0.5 max-w-[110px]">
+              <h5 class="text-xs font-bold text-white truncate">${item.name}</h5>
+              <div class="text-[10px] font-mono text-brandYellow">₹${item.price.toFixed(2)}</div>
             </div>
 
-            <div class="flex items-center space-x-3">
-              <!-- Qty Steppers -->
-              <div class="flex items-center space-x-1 bg-brandSurface px-2 py-1 rounded-lg border border-brandSilver/10 text-xs">
-                <button onclick="updateCartQty('${item.id}', -1)" class="text-brandSilver hover:text-white px-1 font-bold">-</button>
-                <span class="font-mono text-white font-bold px-1">${item.qty}</span>
-                <button onclick="updateCartQty('${item.id}', 1)" class="text-brandSilver hover:text-white px-1 font-bold">+</button>
+            <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-1 bg-brandSurface px-2 py-0.5 rounded-lg border border-brandSilver/10 text-xs">
+                <button onclick="updateCartQty('${item.id}', -1)" class="text-brandSilver hover:text-white px-1 font-bold cursor-pointer">-</button>
+                <span class="font-mono text-white font-bold px-1 text-[11px]">${item.qty}</span>
+                <button onclick="updateCartQty('${item.id}', 1)" class="text-brandSilver hover:text-white px-1 font-bold cursor-pointer">+</button>
               </div>
 
-              <!-- Item Total -->
-              <span class="text-xs font-mono font-bold text-white min-w-[50px] text-right">₹${itemTotal.toFixed(2)}</span>
+              <span class="text-xs font-mono font-bold text-white min-w-[45px] text-right">₹${itemTotal.toFixed(0)}</span>
 
-              <!-- Remove -->
-              <button onclick="removeFromCart('${item.id}')" class="text-brandMuted hover:text-rose-400 text-xs p-1">
+              <button onclick="removeFromCart('${item.id}')" class="text-brandMuted hover:text-rose-400 text-xs p-1 cursor-pointer">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </div>
@@ -1263,13 +1800,14 @@
       document.getElementById('cartGrandTotal').innerText = `₹${subtotal.toFixed(2)}`;
     }
 
-    // Process Final Checkout Atomic Transaction
     function processCheckout() {
       if (cart.length === 0) return;
 
-      // Decrement Inventory Stock
+      playAudio('checkout');
+
       let itemSummaries = [];
       let grandTotal = 0;
+      let snapshotItems = [...cart];
 
       cart.forEach(c => {
         const prod = products.find(p => p.id === c.id);
@@ -1280,7 +1818,6 @@
         grandTotal += c.price * c.qty;
       });
 
-      // Record Sales Transaction
       const newTxnId = `TXN-${Math.floor(1000 + Math.random() * 9000)}`;
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1293,14 +1830,47 @@
         total: grandTotal
       });
 
-      // Reset Cart
       cart = [];
       renderDashboardUI();
       showToast('Checkout Completed', `Receipt ${newTxnId} committed! Total: ₹${grandTotal.toFixed(2)}`);
+
+      openReceiptModal(newTxnId, timeStr, currentUser.name, snapshotItems, grandTotal);
+    }
+
+    function openReceiptModal(id, time, operator, items, total) {
+      document.getElementById('receiptMeta').innerHTML = `
+        <div>Receipt ID: <strong>${id}</strong></div>
+        <div>Date/Time: ${new Date().toLocaleDateString()} ${time}</div>
+        <div>Operator: ${operator}</div>
+      `;
+
+      document.getElementById('receiptItems').innerHTML = items.map(i => `
+        <div class="flex justify-between">
+          <span>${i.name} x${i.qty}</span>
+          <span class="font-mono">₹${(i.price * i.qty).toFixed(2)}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('receiptTotal').innerText = `₹${total.toFixed(2)}`;
+      document.getElementById('receiptBarcode').innerText = `*${id}*`;
+
+      document.getElementById('modalReceipt').classList.remove('hidden');
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('modalReceipt').classList.add('hidden');
+    }
+
+    function updateKPIs() {
+      document.getElementById('kpiTotalProducts').innerText = products.length;
+      document.getElementById('kpiLowStock').innerText = products.filter(p => p.stock <= 10).length;
+      const totalRev = salesTransactions.reduce((acc, t) => acc + t.total, 0);
+      document.getElementById('kpiRevenue').innerText = `₹${totalRev.toFixed(0)}`;
+      document.getElementById('kpiTransactions').innerText = salesTransactions.length;
     }
 
     // -------------------------------------------------------------------------
-    // UTILITY & TOAST SYSTEM
+    // UTILITY & KEYBOARD LISTENERS
     // -------------------------------------------------------------------------
     function showToast(title, message, isWarning = false) {
       const toast = document.getElementById('toastNotification');
@@ -1326,7 +1896,6 @@
       }, 3500);
     }
 
-    // Clock updates
     function startClocks() {
       setInterval(() => {
         const now = new Date();
@@ -1341,7 +1910,18 @@
       }, 1000);
     }
 
-    // Init on Window Load
+    // Keyboard Arrow Controls
+    window.addEventListener('keydown', (e) => {
+      const dash = document.getElementById('viewDashboard');
+      if (dash && !dash.classList.contains('view-hidden')) {
+        if (e.key === 'ArrowRight') {
+          nextProduct();
+        } else if (e.key === 'ArrowLeft') {
+          prevProduct();
+        }
+      }
+    });
+
     window.onload = function () {
       startClocks();
     };
